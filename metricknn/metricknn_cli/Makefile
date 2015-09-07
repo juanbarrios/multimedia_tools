@@ -46,11 +46,11 @@ $(EXECUTABLE): $(C_O_FILES) $(CPP_O_FILES)
 
 $(BUILD_DIR)/c/%.o: %.c $(H_FILES)
 	mkdir -p $(@D)
-	gcc -std=gnu99 -c $(CFLAGS) -o $@ $<
+	gcc -std=gnu99 -c $(CFLAGS) -DVERSION_NAME=$(VERSION_NAME) -o $@ $<
 	
 $(BUILD_DIR)/cpp/%.o: %.cpp $(HPP_FILES) $(H_FILES)
 	mkdir -p $(@D)
-	g++ -std=gnu++11 -c $(CFLAGS) -o $@ $<
+	g++ -std=gnu++11 -c $(CFLAGS) -DVERSION_NAME=$(VERSION_NAME) -o $@ $<
 
 install:
 	install -d $(INSTALL_DIR)/bin

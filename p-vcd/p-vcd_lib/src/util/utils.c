@@ -78,7 +78,7 @@ static void pvcd_print_legal() {
 	printf("There is NO WARRANTY, to the extent permitted by law.\n");
 	printf("\n");
 #ifdef VERSION_NAME
-	printf("Compiled version: "VERSION_NAME"\n");
+	printf("Compiled version: %s\n", VERSION_NAME);
 #endif
 }
 
