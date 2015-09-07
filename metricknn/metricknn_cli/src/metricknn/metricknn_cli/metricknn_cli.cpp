@@ -16,12 +16,14 @@ int main_kmeans(std::vector<std::string> &args);
 int main_pca(std::vector<std::string> &args);
 
 static void print_version() {
-	std::cout << "MetricKnn 0.5.1." << std::endl;
-	std::cout << "Website: http://metricknn.org/" << std::endl;
-	std::cout
-			<< "MetricKnn is made available under the terms of the BSD 2-Clause License."
-			<< std::endl;
+	std::cout << "This file is part of MetricKnn. http://metricknn.org/" << std::endl;
+	std::cout << "MetricKnn is made available under the terms of the BSD 2-Clause License." << std::endl;
+	std::cout << "This is free software: you are free to change and redistribute it." << std::endl;
+	std::cout << "There is NO WARRANTY, to the extent permitted by law." << std::endl;
 	std::cout << "" << std::endl;
+#ifdef VERSION_NAME
+	std::cout << "Compiled version: " << VERSION_NAME << std::endl;
+#endif
 }
 
 int main(int argc, char **argv) {

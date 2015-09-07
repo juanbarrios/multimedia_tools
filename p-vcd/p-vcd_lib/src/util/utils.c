@@ -69,25 +69,17 @@ void set_logfile(const char *path, CmdParams *cmd_params, const char *suffix) {
 void close_logfile() {
 	my_log_closeOutputFile();
 }
-static char* pvcd_getVersionNumber() {
-	return my_newString_format("%i.%i%s, %i bits", 0, 4, "",
-			(int) (8 * sizeof(void*)));
-}
 static void pvcd_print_legal() {
-	char *version = pvcd_getVersionNumber();
-	printf(
-			"This file is part of P-VCD (version %s). http://p-vcd.org/\n",
-			version);
-	free(version);
-	printf(
-			"Copyright (C) 2012-2015, Juan Manuel Barrios <http://juan.cl/>\n");
-	printf("All rights reserved.\n");
-	printf(
+	printf("This file is part of P-VCD. http://p-vcd.org/\n");
+ 	printf(
 			"P-VCD is made available under the terms of the BSD 2-Clause License.\n");
 	printf(
 			"This is free software: you are free to change and redistribute it.\n");
 	printf("There is NO WARRANTY, to the extent permitted by law.\n");
 	printf("\n");
+#ifdef VERSION_NAME
+	printf("Compiled version: "VERSION_NAME"\n");
+#endif
 }
 
 static void pvcd_system_exit_logerror() {
