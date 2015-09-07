@@ -1,0 +1,13 @@
+*.o
+*.obj
+*.lib
+*.a
+*.dll
+*.so
+*.so.*
+*.exe
+*.out
+Debug
+Release
+generated_doc
+.*
