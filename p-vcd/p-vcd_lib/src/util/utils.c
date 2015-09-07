@@ -69,7 +69,6 @@ void set_logfile(const char *path, CmdParams *cmd_params, const char *suffix) {
 void close_logfile() {
 	my_log_closeOutputFile();
 }
-#define STR(x) #x
 static void pvcd_print_legal() {
 	printf("This file is part of P-VCD. http://p-vcd.org/\n");
  	printf(
@@ -79,7 +78,8 @@ static void pvcd_print_legal() {
 	printf("There is NO WARRANTY, to the extent permitted by law.\n");
 	printf("\n");
 #ifdef VERSION_NAME
-	printf("Compiled version: " STR(VERSION_NAME) "\n");
+#define STR_VERSION #VERSION_NAME
+	printf("Compiled version: " STR_VERSION "\n");
 #endif
 }
 

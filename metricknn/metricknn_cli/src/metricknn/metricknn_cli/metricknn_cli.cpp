@@ -15,8 +15,6 @@ int main_search(std::vector<std::string> &args);
 int main_kmeans(std::vector<std::string> &args);
 int main_pca(std::vector<std::string> &args);
 
-#define STR(x) #x
-
 static void print_version() {
 	std::cout << "This file is part of MetricKnn. http://metricknn.org/" << std::endl;
 	std::cout << "MetricKnn is made available under the terms of the BSD 2-Clause License." << std::endl;
@@ -24,7 +22,8 @@ static void print_version() {
 	std::cout << "There is NO WARRANTY, to the extent permitted by law." << std::endl;
 	std::cout << "" << std::endl;
 #ifdef VERSION_NAME
-	std::cout << "Compiled version: " << STR(VERSION_NAME) << std::endl;
+#define STR_VERSION #VERSION_NAME
+	std::cout << "Compiled version: " << STR_VERSION << std::endl;
 #endif
 }
 
