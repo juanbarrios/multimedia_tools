@@ -76,11 +76,12 @@ static void pvcd_print_legal() {
 	printf(
 			"This is free software: you are free to change and redistribute it.\n");
 	printf("There is NO WARRANTY, to the extent permitted by law.\n");
-	printf("\n");
 #ifdef VERSION_NAME
-#define STR_VERSION #VERSION_NAME
-	printf("Compiled version: " STR_VERSION "\n");
+#define STR(x) #x
+#define STRX(x) STR(x)
+	printf("Compiled version: " STRX(VERSION_NAME) "\n");
 #endif
+	printf("\n");
 }
 
 static void pvcd_system_exit_logerror() {

@@ -137,7 +137,7 @@ function testInstallPath {
 function testVersion {
 	#default version name
 	if [[ "$VERSION_NAME" == "" ]]; then
-		DATE=`date +%Y%m%d-%H%M%S`
+		DATE=`date +%Y%m%d_%H%M%S`
 		VERSION_NAME="${ACTION}_${OS}_${DATE}"
 	fi
 }

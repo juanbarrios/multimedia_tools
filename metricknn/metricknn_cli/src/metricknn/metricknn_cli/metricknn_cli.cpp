@@ -20,11 +20,12 @@ static void print_version() {
 	std::cout << "MetricKnn is made available under the terms of the BSD 2-Clause License." << std::endl;
 	std::cout << "This is free software: you are free to change and redistribute it." << std::endl;
 	std::cout << "There is NO WARRANTY, to the extent permitted by law." << std::endl;
-	std::cout << "" << std::endl;
 #ifdef VERSION_NAME
-#define STR_VERSION #VERSION_NAME
-	std::cout << "Compiled version: " << STR_VERSION << std::endl;
+#define STR(x) #x
+#define STRX(x) STR(x)
+	std::cout << "Compiled version: " << STRX(VERSION_NAME) << std::endl;
 #endif
+	std::cout << "" << std::endl;
 }
 
 int main(int argc, char **argv) {
