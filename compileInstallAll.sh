@@ -253,6 +253,10 @@ if [[ "$ACTION" == "debug" || "$ACTION" == "release" ]]; then
 	compileProject "myutils/myutilsimage_cli"
 	compileProject "p-vcd/p-vcd_lib"
 	compileProject "p-vcd/p-vcd_cli"
+	#on windows copy all the generaed dll to the exe folder
+	if [[ "$OS" == "win32" || "$OS" == "win64" ]]; then
+		install "${INSTALL_PATH}/lib/"*"${SUFFIX_LIB}" "${INSTALL_PATH}/bin/"
+	fi
 elif [[ "$ACTION" == "doc" ]]; then
 	docProject "myutils/myutils_lib"
 	docProject "myutils/myutilsimage_lib"
