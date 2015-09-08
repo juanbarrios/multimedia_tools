@@ -127,7 +127,7 @@ function testSourcePath {
 function testInstallPath {
 	#default install path
 	if [[ "$INSTALL_PATH" == "" ]]; then
-		INSTALL_PATH="install_$OS"
+		INSTALL_PATH="multimedia_tools_$OS"
 	fi
 	#convert relative to absolute path
 	if [[ "${INSTALL_PATH:0:1}" != "/" ]]; then
@@ -171,30 +171,29 @@ function updateCompileFlags {
 		fi
 	fi
 
-	LDFLAGS+=" -lpthread -lm"
 
-	if [[ -f "$INSTALL_PATH/myutils/lib/libmyutils$SUFFIX_LIB" ]]; then
-		CFLAGS+=" -I$INSTALL_PATH/myutils/include"
-		LDFLAGS+=" -L$INSTALL_PATH/myutils/lib -lmyutils"
+	CFLAGS+=" -I$INSTALL_PATH/include"
+	if [[ -d "$INSTALL_PATH/lib" ]]; then
+		LDFLAGS+=" -L$INSTALL_PATH/lib"
 	fi
-	if [[ -f "$INSTALL_PATH/metricknn/lib/libmetricknn$SUFFIX_LIB" ]]; then
-		CFLAGS+=" -I$INSTALL_PATH/metricknn/include"
-		LDFLAGS+=" -L$INSTALL_PATH/metricknn/lib -lmetricknn"
+	if [[ -f "$INSTALL_PATH/lib/libmyutils$SUFFIX_LIB" ]]; then
+		LDFLAGS+=" -lmyutils"
 	fi
-	if [[ -f "$INSTALL_PATH/myutils/lib/libmyutilsimage$SUFFIX_LIB" ]]; then
-		CFLAGS+=" -I$INSTALL_PATH/myutils/include"
-		LDFLAGS+=" -L$INSTALL_PATH/myutils/lib -lmyutilsimage"
+	if [[ -f "$INSTALL_PATH/lib/libmetricknn$SUFFIX_LIB" ]]; then
+		LDFLAGS+=" -lmetricknn"
 	fi
-	if [[ -f "$INSTALL_PATH/pvcd/lib/libpvcd$SUFFIX_LIB" ]]; then
-		CFLAGS+=" -I$INSTALL_PATH/pvcd/include"
-		LDFLAGS+=" -L$INSTALL_PATH/pvcd/lib -lpvcd"
+	if [[ -f "$INSTALL_PATH/lib/libmyutilsimage$SUFFIX_LIB" ]]; then
+		LDFLAGS+=" -lmyutilsimage"
 	fi
+	if [[ -f "$INSTALL_PATH/lib/libpvcd$SUFFIX_LIB" ]]; then
+		LDFLAGS+=" -lpvcd"
+	fi
+	LDFLAGS+=" -lpthread -lm"
 	setExternalDependencies
 }
 
 function compileProject {
 	local DIR="$1"
-	local PROJ="$2"
 	if [[ ! -d "$DIR" ]]; then return; fi
 	local OLD_CFLAGS="$CFLAGS"
 	local OLD_LDFLAGS="$LDFLAGS"
@@ -208,8 +207,8 @@ function compileProject {
 	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" all
 	if [[ $? -ne 0 ]]; then exit 1; fi
 	echo \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}/$PROJ" install && \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}/$PROJ" install
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}" install && \
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}" install
 	if [[ $? -ne 0 ]]; then exit 1; fi
 	CFLAGS="$OLD_CFLAGS"
 	LDFLAGS="$OLD_LDFLAGS"
@@ -247,13 +246,13 @@ testInstallPath
 testVersion
 
 if [[ "$ACTION" == "debug" || "$ACTION" == "release" ]]; then
-	compileProject "myutils/myutils_lib"      "myutils"
-	compileProject "metricknn/metricknn_lib"  "metricknn"
-	compileProject "metricknn/metricknn_cli"  "metricknn"
-	compileProject "myutils/myutilsimage_lib" "myutils"
-	compileProject "myutils/myutilsimage_cli" "myutils"
-	compileProject "p-vcd/p-vcd_lib"          "pvcd"
-	compileProject "p-vcd/p-vcd_cli"          "pvcd"
+	compileProject "myutils/myutils_lib"
+	compileProject "metricknn/metricknn_lib"
+	compileProject "metricknn/metricknn_cli"
+	compileProject "myutils/myutilsimage_lib"
+	compileProject "myutils/myutilsimage_cli"
+	compileProject "p-vcd/p-vcd_lib"
+	compileProject "p-vcd/p-vcd_cli"
 elif [[ "$ACTION" == "doc" ]]; then
 	docProject "myutils/myutils_lib"
 	docProject "myutils/myutilsimage_lib"
