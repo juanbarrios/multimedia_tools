@@ -12,12 +12,12 @@
 # 
 #
 # WINDOWS
-#    Requires a MinGW compiler and MSYS tools (including commands: make, find).
+#    Required a MinGW compiler and MSYS tools (including commands: make, find).
 #    Usage example:
 #        ./compileInstallAll.sh release win64 'c:/multimedia_tools/'
 #
 # LINUX
-#    Requires GNU compiler and build-tools.
+#    Required a GNU compiler and build-tools.
 #    Usage example:
 #        ./compileInstallAll.sh release linux64 /opt/multimedia_tools
 #
@@ -39,6 +39,8 @@ function setExternalDependencies {
 	#Option 3: Manually set the paths to headers and libraries.
 	#CFLAGS+=" -I/usr/opencv/include"
 	#LDFLAGS+=" -L/usr/opencv/lib -lopencv_core249 -lopencv_highgui249 -lopencv_imgproc249 -lopencv_contrib249 -lopencv_features2d249 -lopencv_nonfree249"
+	#On linux it may be helpful to use the set rpath option at linking step
+	#LDFLAGS+=" -Wl,-rpath,/usr/opencv/lib"
 
 	#Configure dependency with FLANN. See http://www.cs.ubc.ca/research/flann/
 	#Option 1: set the NO_FLANN flag, which disables all methods requiring FLANN.
@@ -49,6 +51,8 @@ function setExternalDependencies {
 	#Option 3: Manually set the paths to headers and libraries.
 	#CFLAGS+=" -I/usr/flann/include"
 	#LDFLAGS+=" -L/usr/flann/lib -lflann -lflann_cpp"
+	#On linux it may be helpful to use the set rpath option at linking step
+	#LDFLAGS+=" -Wl,-rpath,/usr/flann/lib"
 
 	#Configure dependency with VLFEAT. See http://www.vlfeat.org/
 	#Option 1: set the NO_VLFEAT flag, which disables all methods requiring VLFEAT.
@@ -59,6 +63,8 @@ function setExternalDependencies {
 	#Option 3: Manually set the paths to headers and libraries.
 	#CFLAGS+=" -I/usr/vlfeat/include"
 	#LDFLAGS+=" -L/usr/vlfeat/lib -lvl"
+	#On linux it may be helpful to use the set rpath option at linking step
+	#LDFLAGS+=" -Wl,-rpath,/usr/vlfeat/lib"
 
 	#Options for the make tool. -j compiles sources in parallel threads.
 	MAKE_OPTIONS="-j 8"
@@ -171,10 +177,11 @@ function updateCompileFlags {
 		fi
 	fi
 
-
 	CFLAGS+=" -I$INSTALL_PATH/include"
 	if [[ -d "$INSTALL_PATH/lib" ]]; then
 		LDFLAGS+=" -L$INSTALL_PATH/lib"
+		#On linux it may be helpful to use the set rpath option at linking step
+		#LDFLAGS+=" -Wl,-rpath,$INSTALL_PATH/lib"
 	fi
 	if [[ -f "$INSTALL_PATH/lib/libmyutils$SUFFIX_LIB" ]]; then
 		LDFLAGS+=" -lmyutils"
@@ -253,7 +260,7 @@ if [[ "$ACTION" == "debug" || "$ACTION" == "release" ]]; then
 	compileProject "myutils/myutilsimage_cli"
 	compileProject "p-vcd/p-vcd_lib"
 	compileProject "p-vcd/p-vcd_cli"
-	#on windows copy all the generaed dll to the exe folder
+	#on windows copy the generated dll to the bin folder
 	if [[ "$OS" == "win32" || "$OS" == "win64" ]]; then
 		install "${INSTALL_PATH}/lib/"*"${SUFFIX_LIB}" "${INSTALL_PATH}/bin/"
 	fi
