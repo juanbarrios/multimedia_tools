@@ -326,7 +326,7 @@ static MknnIndex *create_load_index(MknnDataset *search_dataset,
 			free(fname);
 			return index;
 		} else {
-			my_log_info("can't load index in file %s\n", fname);
+			my_log_info("can't load index in %s\n", fname);
 			free(fname);
 		}
 	}
@@ -347,7 +347,7 @@ static MknnIndex *create_load_index(MknnDataset *search_dataset,
 		}
 		return index;
 	}
-	my_log_error("can't load index\n");
+	my_log_error("can't load index '%s'\n", index_build_options);
 	return NULL;
 }
 void ss_resolve_search(CmdParams *cmd_params, const char *argOption) {
@@ -386,9 +386,10 @@ void ss_resolve_search(CmdParams *cmd_params, const char *argOption) {
 		//log_info("  [-gt filename]\n");
 		return;
 	}
-	const char *profile_name = NULL, *index_build_options = "LINEARSCAN",
-			*search_options =
-			NULL, *search_name = NULL;
+	const char *profile_name = NULL;
+	const char *index_build_options = "LINEARSCAN";
+	const char *search_options = NULL; 
+	const char *search_name = NULL;
 	const char *load_index_path = NULL, *load_index_name = NULL;
 	const char *save_index_path = NULL, *save_index_name = NULL;
 	bool write_results = true, searchByLocalVectors = false,
