@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="project" default="build" basedir="..">
+
+	<target name="init">
+		<property name="project.path" value="." />
+
+		<property name="VERSION_NAME" value="x" />
+		<property name="BUILD_DIR" value="x" />
+		<property name="INSTALL_DIR" value="x" />
+		<property name="JAR_NAME" value="x" />
+
+	</target>
+
+	<target name="build" depends="init">
+
+		<property name="dirTempSrc" value="${BUILD_DIR}/temp_src" />
+		<property name="dirTempClasses" value="${BUILD_DIR}/temp_classes" />
+		<delete dir="${dirTempSrc}" />
+		<delete dir="${dirTempClasses}" />
+		
+		<mkdir dir="${dirTempSrc}" />
+		<copy todir="${dirTempSrc}">
+			<fileset dir="${project.path}/src" />
+		</copy>
+		<replace dir="${dirTempSrc}" encoding="UTF-8">
+			<include name="**/Parameters.java" />
+			<replacefilter token="{VERSION_NAME}" value="${VERSION_NAME}" />
+		</replace>
+
+		<path id="cp.jars">
+			<fileset file="${project.path}/lib/commons-codec-1.9.jar" />
+			<fileset file="${project.path}/lib/commons-io-2.4.jar" />
+			<fileset file="${project.path}/lib/commons-lang3-3.3.jar" />
+			<fileset file="${project.path}/lib/commons-validator-1.4.0.jar" />
+			<fileset file="${project.path}/lib/miglayout15-swing.jar" />
+			<fileset file="${project.path}/lib/vlcj-3.6.0.jar" />
+			<fileset file="${project.path}/lib/jna-3.5.2.jar" />
+			<fileset file="${project.path}/lib/platform-3.5.2.jar" />
+			<fileset file="${project.path}/lib/slf4j-api-1.7.10.jar" />
+			<fileset file="${project.path}/lib/slf4j-nop-1.7.10.jar" />
+		</path>
+
+		<manifestclasspath property="manifest.cp" jarfile="${project.path}/lib/${JAR_NAME}">
+			<classpath refid="cp.jars" />
+		</manifestclasspath>
+
+		<mkdir dir="${dirTempClasses}" />
+		<javac srcdir="${dirTempSrc}"
+				destdir="${dirTempClasses}"
+				classpathref="cp.jars"
+				debug="true"
+				source="1.6"
+				encoding="UTF-8"
+				includeantruntime="false"
+				optimize="false"
+				nowarn="true">
+		</javac>
+
+		<jar destfile="${BUILD_DIR}/${JAR_NAME}"
+				filesonly="true"
+				compress="true"
+				duplicate="preserve">
+			<manifest>
+				<attribute name="P-VCD-version" value="${VERSION_NAME}" />
+				<attribute name="Main-Class" value="org.p_vcd.ui.Main" />
+				<attribute name="Class-Path" value="${manifest.cp}" />
+			</manifest>
+			<fileset dir="${dirTempSrc}" />
+			<fileset dir="${dirTempClasses}">
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
+
+		<delete dir="${dirTempSrc}" />
+		<delete dir="${dirTempClasses}" />
+	</target>
+
+</project>
