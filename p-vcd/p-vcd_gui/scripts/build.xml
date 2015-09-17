@@ -7,7 +7,6 @@
 
 		<property name="VERSION_NAME" value="x" />
 		<property name="BUILD_DIR" value="x" />
-		<property name="INSTALL_DIR" value="x" />
 		<property name="JAR_NAME" value="x" />
 
 	</target>
