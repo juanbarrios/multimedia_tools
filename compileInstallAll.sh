@@ -9,17 +9,16 @@
 # 
 # Run the script with no parameters to print help:
 #   bash compileInstallAll.sh
-# 
 #
 # WINDOWS
-#    Required a MinGW compiler and MSYS tools (including commands: make, find).
+#    Requirement: MinGW compiler and MSYS tools (including commands: make, find).
 #    Usage example:
-#        ./compileInstallAll.sh release win64 'c:/multimedia_tools/'
+#        bash compileInstallAll.sh release win64 'c:/multimedia_tools/'
 #
 # LINUX
-#    Required a GNU compiler and build-tools.
+#    Requirement: GNU C/C++ compiler and build-tools (gcc, g++, make).
 #    Usage example:
-#        ./compileInstallAll.sh release linux64 /opt/multimedia_tools
+#        bash compileInstallAll.sh release linux64 /opt/multimedia_tools
 #
 #####################################################################
 
@@ -119,9 +118,12 @@ function testOS {
 	echo "OS: $OS"
 }
 function testSourcePath {
-	#default source folder is current folder
+	#default source folder is this script folder
 	if [[ "$SOURCE_PATH" == "" ]]; then
-		SOURCE_PATH="$PWD"
+		CURR=`pwd`
+		cd `dirname "$0"`
+		SOURCE_PATH=`pwd`
+		cd "$CURR"
 	fi
 	#test the existence of projects folders
 	if [[ ! -d "$SOURCE_PATH/myutils/myutils_lib"
@@ -139,7 +141,8 @@ function testInstallPath {
 		INSTALL_PATH="multimedia_tools_$OS"
 	fi
 	#convert relative to absolute path
-	if [[ "${INSTALL_PATH:0:1}" != "/" ]]; then
+	#an absolute path starts with '/' or contains a drive letter and ':'
+	if [[ "${INSTALL_PATH:0:1}" != "/" && "${INSTALL_PATH:1:1}" != ":" ]]; then
 		INSTALL_PATH="$PWD/$INSTALL_PATH"
 	fi
 	echo "INSTALL_PATH: $INSTALL_PATH"
@@ -215,12 +218,12 @@ function compileProject {
 	export SUFFIX_LIB
 	export SUFFIX_EXE
 	echo \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" all && \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" all
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=build/${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" all && \
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=build/${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" all
 	if [[ $? -ne 0 ]]; then exit 1; fi
 	echo \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}" install && \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}" install
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=build/${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}" install && \
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=build/${ACTION}_${OS}" "VERSION_NAME=${VERSION_NAME}" "INSTALL_DIR=${INSTALL_PATH}" install
 	if [[ $? -ne 0 ]]; then exit 1; fi
 	CFLAGS="$OLD_CFLAGS"
 	LDFLAGS="$OLD_LDFLAGS"
@@ -231,16 +234,14 @@ function docProject {
 	local DIR="$1"
 	if [[ ! -d "$DIR" ]]; then return; fi
 	echo \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "DOC_DIR=generated_doc" doc && \
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "DOC_DIR=generated_doc" doc
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "DOC_DIR=build/generated_doc" doc && \
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "DOC_DIR=build/generated_doc" doc
 	if [[ $? -ne 0 ]]; then exit 1; fi
 }
 function cleanProject {
 	local DIR="$1"
 	if [[ ! -d "$DIR" ]]; then return; fi
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=release_${OS}" clean
-	if [[ $? -ne 0 ]]; then exit 1; fi
-	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=debug_${OS}" clean
+	make $MAKE_OPTIONS -f Makefile -C "${SOURCE_PATH}/$DIR" "BUILD_DIR=build" clean
 	if [[ $? -ne 0 ]]; then exit 1; fi
 }
 
@@ -267,10 +268,6 @@ if [[ "$ACTION" == "debug" || "$ACTION" == "release" ]]; then
 	compileProject "p-vcd/p-vcd_lib"
 	compileProject "p-vcd/p-vcd_cli"
 	compileProject "p-vcd/p-vcd_gui"
-	#on windows copy the compiled dll to the bin folder
-	if [[ "$OS" == "win32" || "$OS" == "win64" ]]; then
-		install "${INSTALL_PATH}/lib/"*"${SUFFIX_LIB}" "${INSTALL_PATH}/bin/"
-	fi
 elif [[ "$ACTION" == "doc" ]]; then
 	docProject "myutils/myutils_lib"
 	docProject "myutils/myutilsimage_lib"
