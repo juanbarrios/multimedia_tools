@@ -39,7 +39,7 @@ function setExternalDependencies {
 	#Option 3: Manually set the paths to headers and libraries.
 	#CFLAGS+=" -I/usr/opencv/include"
 	#LDFLAGS+=" -L/usr/opencv/lib -lopencv_core249 -lopencv_highgui249 -lopencv_imgproc249 -lopencv_contrib249 -lopencv_features2d249 -lopencv_nonfree249"
-	#On linux it may be helpful to use the set rpath option at linking step
+	#On linux it may be helpful to use the rpath option at linking step
 	#LDFLAGS+=" -Wl,-rpath,/usr/opencv/lib"
 
 	#Configure dependency with FLANN. See http://www.cs.ubc.ca/research/flann/
@@ -51,7 +51,7 @@ function setExternalDependencies {
 	#Option 3: Manually set the paths to headers and libraries.
 	#CFLAGS+=" -I/usr/flann/include"
 	#LDFLAGS+=" -L/usr/flann/lib -lflann -lflann_cpp"
-	#On linux it may be helpful to use the set rpath option at linking step
+	#On linux it may be helpful to use the rpath option at linking step
 	#LDFLAGS+=" -Wl,-rpath,/usr/flann/lib"
 
 	#Configure dependency with VLFEAT. See http://www.vlfeat.org/
@@ -63,10 +63,10 @@ function setExternalDependencies {
 	#Option 3: Manually set the paths to headers and libraries.
 	#CFLAGS+=" -I/usr/vlfeat/include"
 	#LDFLAGS+=" -L/usr/vlfeat/lib -lvl"
-	#On linux it may be helpful to use the set rpath option at linking step
+	#On linux it may be helpful to use the rpath option at linking step
 	#LDFLAGS+=" -Wl,-rpath,/usr/vlfeat/lib"
 
-	#Options for the make tool. -j compiles sources in parallel threads.
+	#Options for the make tool. compiles sources in parallel.
 	MAKE_OPTIONS="-j 8"
 }
 
@@ -91,6 +91,7 @@ function testAction {
 		echo "Please enter a valid action: release, debug, doc, clean."
 		exit 1
 	fi
+	echo "ACTION: $ACTION"
 }
 function testOS {
 	if [[ "$OS" == "" || "$OS" == "auto" ]]; then
@@ -115,6 +116,7 @@ function testOS {
 		echo "Please enter a valid OS: win32, win64, linux32, linux64."
 		exit 1
 	fi
+	echo "OS: $OS"
 }
 function testSourcePath {
 	#default source folder is current folder
@@ -129,6 +131,7 @@ function testSourcePath {
 		echo "Path $SOURCE_PATH does not contain source for projects myutils, metricknn and p-vcd."
 		exit 1
 	fi
+	echo "SOURCE_PATH: $SOURCE_PATH"
 }
 function testInstallPath {
 	#default install path
@@ -139,6 +142,7 @@ function testInstallPath {
 	if [[ "${INSTALL_PATH:0:1}" != "/" ]]; then
 		INSTALL_PATH="$PWD/$INSTALL_PATH"
 	fi
+	echo "INSTALL_PATH: $INSTALL_PATH"
 }
 function testVersion {
 	#default version name
@@ -146,6 +150,7 @@ function testVersion {
 		DATE=`date +%Y%m%d_%H%M%S`
 		VERSION_NAME="${ACTION}_${OS}_${DATE}"
 	fi
+	echo "VERSION_NAME: $VERSION_NAME"
 }
 function updateCompileFlags {
 	if [[ "$OS" == "win32" || "$OS" == "win64" ]]; then
@@ -248,9 +253,10 @@ VERSION_NAME="$5"
 
 testAction
 testOS
-testSourcePath
 testInstallPath
 testVersion
+testSourcePath
+echo ""
 
 if [[ "$ACTION" == "debug" || "$ACTION" == "release" ]]; then
 	compileProject "myutils/myutils_lib"
@@ -260,7 +266,8 @@ if [[ "$ACTION" == "debug" || "$ACTION" == "release" ]]; then
 	compileProject "myutils/myutilsimage_cli"
 	compileProject "p-vcd/p-vcd_lib"
 	compileProject "p-vcd/p-vcd_cli"
-	#on windows copy the generated dll to the bin folder
+	compileProject "p-vcd/p-vcd_gui"
+	#on windows copy the compiled dll to the bin folder
 	if [[ "$OS" == "win32" || "$OS" == "win64" ]]; then
 		install "${INSTALL_PATH}/lib/"*"${SUFFIX_LIB}" "${INSTALL_PATH}/bin/"
 	fi
