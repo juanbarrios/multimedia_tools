@@ -17,10 +17,10 @@ public class VideoDatabase implements Comparable<VideoDatabase> {
 
 	public static synchronized List<VideoDatabase> getReferenceDatabases() {
 		List<VideoDatabase> arrayList = new ArrayList<VideoDatabase>();
-		File baseDir = Parameters.get().DATABASES_DIR;
-		if (!baseDir.exists())
-			return arrayList;
 		try {
+			File baseDir = Parameters.get().getDatabasesPath();
+			if (!baseDir.exists())
+				return arrayList;
 			for (File d : baseDir.listFiles()) {
 				if (!isDirDb(d))
 					continue;
@@ -44,9 +44,8 @@ public class VideoDatabase implements Comparable<VideoDatabase> {
 		return arrayList;
 	}
 
-	public static synchronized VideoDatabase getQueryDatabase(String dbName)
-			throws Exception {
-		File d = new File(Parameters.get().QUERIES_DIR, dbName);
+	public static synchronized VideoDatabase getQueryDatabase(String dbName) throws Exception {
+		File d = new File(Parameters.get().getQueriesPath(), dbName);
 		if (isDirDb(d))
 			return new VideoDatabase(d);
 		return null;
@@ -86,8 +85,7 @@ public class VideoDatabase implements Comparable<VideoDatabase> {
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj != null) && (obj instanceof VideoDatabase)
-				&& ((VideoDatabase) obj).uid.equals(uid);
+		return (obj != null) && (obj instanceof VideoDatabase) && ((VideoDatabase) obj).uid.equals(uid);
 	}
 
 	@Override

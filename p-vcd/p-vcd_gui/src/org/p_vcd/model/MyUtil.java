@@ -26,8 +26,7 @@ public class MyUtil {
 		seg = seg % 3600;
 		long mm = seg / 60;
 		seg = seg % 60;
-		return (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm
-				+ ":" + (seg < 10 ? "0" : "") + seg;
+		return (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm + ":" + (seg < 10 ? "0" : "") + seg;
 	}
 
 	public static String getSecondsToMMSS(double seconds) {
@@ -46,12 +45,9 @@ public class MyUtil {
 		if (tim.length == 1)
 			return Double.parseDouble(tim[1]);
 		else if (tim.length == 2)
-			return Integer.parseInt(tim[0], 10) * 60
-					+ Double.parseDouble(tim[1]);
+			return Integer.parseInt(tim[0], 10) * 60 + Double.parseDouble(tim[1]);
 		else if (tim.length == 3)
-			return Integer.parseInt(tim[0], 10) * 3600
-					+ Integer.parseInt(tim[1], 10) * 60
-					+ Double.parseDouble(tim[2]);
+			return Integer.parseInt(tim[0], 10) * 3600 + Integer.parseInt(tim[1], 10) * 60 + Double.parseDouble(tim[2]);
 		throw new Exception("invalid time format " + txt);
 	}
 

@@ -16,22 +16,17 @@ import org.apache.commons.io.FileUtils;
 
 public class PVCDObj {
 
-	public static Map<String, PVCDObj> parseDataset(File datasetDir)
-			throws Exception {
+	public static Map<String, PVCDObj> parseDataset(File datasetDir) throws Exception {
 		Map<String, PVCDObj> objects = new TreeMap<String, PVCDObj>();
-		List<String> lines = FileUtils.readLines(new File(datasetDir,
-				"files.txt"), "UTF8");
+		List<String> lines = FileUtils.readLines(new File(datasetDir, "files.txt"), "UTF8");
 		for (String line : lines) {
 			if (line.isEmpty() || line.startsWith("#"))
 				continue;
 			String[] parts = line.split("\t");
-			PVCDObj p = new PVCDObj("I".equals(parts[0]), "V".equals(parts[0]),
-					parts[1], parts[2].replace('\\', '/'),
-					Long.parseLong(parts[3]), Integer.parseInt(parts[4]),
-					Integer.parseInt(parts[5]));
+			PVCDObj p = new PVCDObj("I".equals(parts[0]), "V".equals(parts[0]), parts[1], parts[2].replace('\\', '/'),
+					Long.parseLong(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
 			if (p.isVideo()) {
-				p.setSecondsLength(Double.parseDouble(parts[7])
-						- Double.parseDouble(parts[6]));
+				p.setSecondsLength(Double.parseDouble(parts[7]) - Double.parseDouble(parts[6]));
 				p.setFps(Double.parseDouble(parts[8]));
 			}
 			if (objects.put(p.getObjId(), p) != null)
@@ -46,8 +41,8 @@ public class PVCDObj {
 	private int width, height;
 	private long filesize;
 
-	public PVCDObj(boolean isImage, boolean isVideo, String objId,
-			String filePath, long filesize, int width, int height) {
+	public PVCDObj(boolean isImage, boolean isVideo, String objId, String filePath, long filesize, int width,
+			int height) {
 		this.isImage = isImage;
 		this.isVideo = isVideo;
 		this.objId = objId;

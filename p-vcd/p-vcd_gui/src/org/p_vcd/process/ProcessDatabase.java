@@ -38,8 +38,7 @@ public class ProcessDatabase extends ProcessBase {
 		FileUtils.forceMkdir(dataDir);
 		File dbRef = new File(dataDir, dbName);
 		if (!dbRef.exists())
-			runPvcdDb(new ProcessArguments("-new", "-db", dbRef,
-					"-recursiveDirs", "-fileType", "video", set));
+			runPvcdDb(new ProcessArguments("-new", "-db", dbRef, "-recursiveDirs", "-fileType", "video", set));
 		status.setPctProgress("Database " + dbName + " created OK", 1);
 	}
 }

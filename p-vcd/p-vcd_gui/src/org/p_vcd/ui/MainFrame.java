@@ -27,11 +27,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
+import org.p_vcd.model.MyUtil;
+import org.p_vcd.model.Parameters;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -46,7 +50,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setSize(400, 330);
 		setTitle("P-VCD");
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setResizable(false);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -55,12 +59,24 @@ public class MainFrame extends JFrame {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
+		JMenuItem mntmConfig = new JMenuItem("Configuration");
+		mntmConfig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				configMenu(null);
+			}
+		});
+		mnFile.add(mntmConfig);
+
+		JSeparator menuBar_1 = new JSeparator();
+		mnFile.add(menuBar_1);
+
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				exitMenu();
 			}
 		});
+
 		mnFile.add(mntmExit);
 
 		Component glue = Box.createGlue();
@@ -76,6 +92,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		mnHelp.add(mntmAbout);
+
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -88,23 +105,18 @@ public class MainFrame extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(100, 0));
-		panel.setBorder(new TitledBorder(UIManager
-				.getBorder("TitledBorder.border"), "Applications",
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Applications",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new MigLayout("", "[25px][grow]",
-				"[grow][grow][grow][grow][grow][grow]"));
+		panel.setLayout(new MigLayout("", "[25px][grow]", "[grow][grow][grow][grow][grow][grow]"));
 
 		ButtonGroup buttonGroup = new ButtonGroup();
 		buttonGroup.add(rdbtnVCD);
 		buttonGroup.add(rdbtnINS);
 		buttonGroup.add(rdbtnIS);
-		JLabel lblVCD = new JLabel(
-				"Locate the ocurrence of a given clip or frame in a video database.");
-		JLabel lblINS = new JLabel(
-				"Locate the ocurrence of an given object in a video database.");
-		JLabel lblIS = new JLabel(
-				"Retrieve similar images in a image database.");
+		JLabel lblVCD = new JLabel("Locate the ocurrence of a given clip or frame in a video database.");
+		JLabel lblINS = new JLabel("Locate the ocurrence of an given object in a video database.");
+		JLabel lblIS = new JLabel("Retrieve similar images in a image database.");
 
 		JPanel panel_1 = new JPanel();
 
@@ -142,7 +154,7 @@ public class MainFrame extends JFrame {
 	}
 
 	private void exitMenu() {
-		dispose();
+		this.dispose();
 	}
 
 	private void aboutMenu() {
@@ -152,12 +164,32 @@ public class MainFrame extends JFrame {
 		v.setVisible(true);
 	}
 
+	private void configMenu(String errorMessage) {
+		ConfigDialog v = new ConfigDialog(errorMessage);
+		v.setModalityType(ModalityType.APPLICATION_MODAL);
+		v.setLocationRelativeTo(MainFrame.this);
+		v.setVisible(true);
+	}
+
+	private void vcdDialog() {
+		VcdDialog v = new VcdDialog();
+		v.setModalityType(ModalityType.APPLICATION_MODAL);
+		v.setLocationRelativeTo(MainFrame.this);
+		v.setVisible(true);
+	}
+
+	private void invalidConfigMessage() {
+		SwingUtil.showMessage("Invalid configuration. The configuration menu will be shown.");
+	}
+
 	private void startButton() {
-		if (rdbtnVCD.isSelected()) {
-			VcdDialog v = new VcdDialog();
-			v.setModalityType(ModalityType.APPLICATION_MODAL);
-			v.setLocationRelativeTo(MainFrame.this);
-			v.setVisible(true);
+		String errorMessage = Parameters.get().validate();
+		if (errorMessage != null) {
+			System.out.println(MyUtil.getFormateDate() + "P-VCD error in configuration.");
+			invalidConfigMessage();
+			configMenu(errorMessage);
+		} else if (rdbtnVCD.isSelected()) {
+			vcdDialog();
 		}
 	}
 

@@ -36,8 +36,8 @@ public class ProcessVCD extends ProcessBase {
 	private StatusListener status;
 	private int currentStep, totalSteps;
 
-	public ProcessVCD(Collection<VideoDatabase> referenceDbs, File queryFile,
-			URL queryUrl, VideoDatabase queryDb, ProcessOptions options) {
+	public ProcessVCD(Collection<VideoDatabase> referenceDbs, File queryFile, URL queryUrl, VideoDatabase queryDb,
+			ProcessOptions options) {
 		this.referenceDbs = referenceDbs;
 		this.queryFile = queryFile;
 		this.queryUrl = queryUrl;
@@ -80,32 +80,26 @@ public class ProcessVCD extends ProcessBase {
 			}
 		});
 		long en = System.currentTimeMillis();
-		stepCompleted("Finished OK. Total time: "
-				+ MyUtil.getSecondsToHHMMSS((en - st) / 1000.0));
+		stepCompleted("Finished OK. Total time: " + MyUtil.getSecondsToHHMMSS((en - st) / 1000.0));
 	}
 
 	private void downloadQueryDB() throws Exception {
-		FileUtils.forceMkdir(Parameters.get().DOWNLOADS_DIR);
-		File tmpDir = Files.createTempDirectory(
-				Parameters.get().DOWNLOADS_DIR.toPath(), "download-").toFile();
+		FileUtils.forceMkdir(Parameters.get().getDownloadsPath());
+		File tmpDir = Files.createTempDirectory(Parameters.get().getDownloadsPath().toPath(), "download-").toFile();
 		downloadImageOrVideo(queryUrl, tmpDir);
 		for (File file : tmpDir.listFiles()) {
-			if (MyUtil.fileHasExtension(file,
-					Parameters.get().IMAGE_AND_VIDEO_EXTENSIONS)) {
+			if (MyUtil.fileHasExtension(file, Parameters.get().getImageAndVideoExtensions())) {
 				queryFile = file;
 				break;
 			}
 		}
 	}
 
-	protected void downloadImageOrVideo(URL imageOrVideoUrl, File workingDir)
-			throws Exception {
+	protected void downloadImageOrVideo(URL imageOrVideoUrl, File workingDir) throws Exception {
 		ProcessArguments commandLine = new ProcessArguments();
-		commandLine.add("--server-response", "--spider",
-				"--no-check-certificate", imageOrVideoUrl);
+		commandLine.add("--server-response", "--spider", "--no-check-certificate", imageOrVideoUrl);
 		StringBuffer stderr = new StringBuffer();
-		runCommandInternal(Parameters.get().WGET_BIN, commandLine, workingDir,
-				null, stderr);
+		runWget(commandLine, workingDir, stderr);
 		boolean isImage = false, isVideo = false;
 		for (String line : stderr.toString().split("\n")) {
 			String l = line.toLowerCase();
@@ -119,23 +113,20 @@ public class ProcessVCD extends ProcessBase {
 		}
 		commandLine.clear();
 		if (isImage || isVideo) {
-			commandLine.add("--no-directories", "--no-check-certificate",
-					imageOrVideoUrl);
-			runCommandInternal(Parameters.get().WGET_BIN, commandLine,
-					workingDir, null, null);
+			commandLine.add("--no-directories", "--no-check-certificate", imageOrVideoUrl);
+			runWget(commandLine, workingDir, null);
 		} else {
 			commandLine.add("--restrict-filenames", imageOrVideoUrl);
-			runCommandInternal(Parameters.get().YOUTUBE_DL_BIN, commandLine,
-					workingDir, null, null);
+			runYoutubeDl(commandLine, workingDir);
 		}
 	}
 
 	private void createQueryDB() throws Exception {
-		FileUtils.forceMkdir(Parameters.get().QUERIES_DIR);
+		FileUtils.forceMkdir(Parameters.get().getQueriesPath());
 		String dbName = MyUtil.getMd5(queryFile) + queryFile.length();
 		VideoDatabase qdb = VideoDatabase.getQueryDatabase(dbName);
 		if (qdb == null) {
-			File newDb = new File(Parameters.get().QUERIES_DIR, dbName);
+			File newDb = new File(Parameters.get().getQueriesPath(), dbName);
 			runPvcdDb(new ProcessArguments("-new", "-db", newDb, queryFile));
 		}
 		qdb = VideoDatabase.getQueryDatabase(dbName);
@@ -144,79 +135,63 @@ public class ProcessVCD extends ProcessBase {
 		this.queryDb = qdb;
 	}
 
-	private void computeDescriptorsDB(String name, VideoDatabase videoDb,
-			ProcessOptions.OneDescriptorOptions optD) throws Exception {
+	private void computeDescriptorsDB(String name, VideoDatabase videoDb, ProcessOptions.OneDescriptorOptions optD)
+			throws Exception {
 		int num = videoDb.getFileList().size();
-		stepCompleted("Segmenting " + num + " " + name + " video"
-				+ (num == 1 ? "" : "s"));
-		if (!new File(new File(videoDb.getDbDir(), "segmentations"),
-				optD.segAlias).exists())
-			runPvcdDb(new ProcessArguments("-segment", "-db", videoDb, "-seg",
-					optD.seg, "-alias", optD.segAlias));
-		stepCompleted("Computing descriptors for " + num + " " + name
-				+ " video" + (num == 1 ? "" : "s"));
-		if (!new File(new File(videoDb.getDbDir(), "descriptors"),
-				optD.desAlias).exists())
-			runPvcdDb(new ProcessArguments("-extract", "-db", videoDb, "-seg",
-					optD.segAlias, "-desc", optD.des, "-alias", optD.desAlias));
+		stepCompleted("Segmenting " + num + " " + name + " video" + (num == 1 ? "" : "s"));
+		if (!new File(new File(videoDb.getDbDir(), "segmentations"), optD.segAlias).exists())
+			runPvcdDb(new ProcessArguments("-segment", "-db", videoDb, "-seg", optD.seg, "-alias", optD.segAlias));
+		stepCompleted("Computing descriptors for " + num + " " + name + " video" + (num == 1 ? "" : "s"));
+		if (!new File(new File(videoDb.getDbDir(), "descriptors"), optD.desAlias).exists())
+			runPvcdDb(new ProcessArguments("-extract", "-db", videoDb, "-seg", optD.segAlias, "-desc", optD.des,
+					"-alias", optD.desAlias));
 	}
 
 	private File createSearchProfile(VideoDatabase dbr) throws Exception {
-		FileUtils.forceMkdir(Parameters.get().SEARCHES_DIR);
+		FileUtils.forceMkdir(Parameters.get().getSearchesPath());
 		String searchName = dbr.getName() + "-" + queryDb.getName();
-		File searchProfile = new File(Parameters.get().SEARCHES_DIR, searchName);
+		File searchProfile = new File(Parameters.get().getSearchesPath(), searchName);
 		if (searchProfile.exists())
 			FileUtils.forceDelete(searchProfile);
 		// if (!this.searchProfile.exists())
-		runPvcdSearch(new ProcessArguments("-new", "-profile", searchProfile,
-				"-query", queryDb, "-descQ", options.descriptorQuery.desAlias,
-				"-reference", dbr, "-descR", options.descriptorRef.desAlias,
+		runPvcdSearch(new ProcessArguments("-new", "-profile", searchProfile, "-query", queryDb, "-descQ",
+				options.descriptorQuery.desAlias, "-reference", dbr, "-descR", options.descriptorRef.desAlias,
 				"-distance", options.searchOptions.distance));
 		return searchProfile;
 	}
 
-	private File similaritySearch(File searchProfile, VideoDatabase dbr)
-			throws Exception {
+	private File similaritySearch(File searchProfile, VideoDatabase dbr) throws Exception {
 		String searchId = "search";
 		File filesNN = new File(searchProfile, "ss," + searchId + ".txt");
-		ProcessArguments params = new ProcessArguments("-ss", "-profile",
-				searchProfile, "-searchName", searchId);
+		ProcessArguments params = new ProcessArguments("-ss", "-profile", searchProfile, "-searchName", searchId);
 		if (options.searchOptions.isSearchByLocal)
 			params.add("-searchByLocalVectors");
 		params.add("-index", options.searchOptions.indexBuildOptions);
 		if (options.searchOptions.indexFilename != null) {
-			File desDir = new File(new File(dbr.getDbDir(), "descriptors"),
-					options.descriptorRef.desAlias);
-			File indexFile = new File(desDir,
-					options.searchOptions.indexFilename);
-			params.add("-load_index_path", indexFile, "-save_index_path",
-					indexFile);
+			File desDir = new File(new File(dbr.getDbDir(), "descriptors"), options.descriptorRef.desAlias);
+			File indexFile = new File(desDir, options.searchOptions.indexFilename);
+			params.add("-load_index_path", indexFile, "-save_index_path", indexFile);
 		}
 		params.add("-knn", options.searchOptions.knnSearch);
 		if (options.searchOptions.indexSearchOptions != null)
-			params.add("-searchOptions",
-					options.searchOptions.indexSearchOptions);
+			params.add("-searchOptions", options.searchOptions.indexSearchOptions);
 		runPvcdSearch(params);
 		if (options.searchOptions.isSearchByLocal) {
-			File filesNNLocal = new File(searchProfile, "ssVector," + searchId
-					+ ".txt");
-			runPvcdMerge(new ProcessArguments("-ss", filesNNLocal, "-out",
-					filesNN, "-maxVectorsIn", options.searchOptions.knnSearch,
-					"-maxNNOut", options.searchOptions.knnSearchAfterMerge));
+			File filesNNLocal = new File(searchProfile, "ssVector," + searchId + ".txt");
+			runPvcdMerge(new ProcessArguments("-ss", filesNNLocal, "-out", filesNN, "-maxVectorsIn",
+					options.searchOptions.knnSearch, "-maxNNOut", options.searchOptions.knnSearchAfterMerge));
 		}
 		return filesNN;
 	}
 
 	private File copyLocalization(File filesNN) throws Exception {
-		File fileDetections = new File(filesNN.getParent(), "detections_"
-				+ filesNN.getName());
-		runPvcdDetect(new ProcessArguments("-detect", "-ss", filesNN, "-out",
-				fileDetections, options.localizationOptions.getOptions()));
+		File fileDetections = new File(filesNN.getParent(), "detections_" + filesNN.getName());
+		runPvcdDetect(new ProcessArguments("-detect", "-ss", filesNN, "-out", fileDetections,
+				options.localizationOptions.getOptions()));
 		return fileDetections;
 	}
 
-	private List<VideoCopy> parseDetectionsFile(File fileDetections,
-			VideoDatabase dbr) throws Exception {
+	private List<VideoCopy> parseDetectionsFile(File fileDetections, VideoDatabase dbr) throws Exception {
 		List<VideoCopy> detections = new ArrayList<VideoCopy>();
 		BufferedReader reader = null;
 		try {

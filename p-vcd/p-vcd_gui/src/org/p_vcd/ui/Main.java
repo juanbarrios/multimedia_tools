@@ -20,15 +20,11 @@ public class Main {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			if (args.length < 2)
-				throw new IllegalArgumentException(
-						"The command line is: java "
-								+ Main.class.getCanonicalName()
-								+ " [bitness] [ini_file]  , where [bitness] is the JVM bitness (32 or 64) and [ini_file] is the path to the configuration file.");
+				throw new IllegalArgumentException("The command line is: java " + Main.class.getCanonicalName()
+						+ " [bitness] [base_path]  , where [bitness] is the JVM bitness (32 or 64) and [base_path] is the installation root path.");
 			int bitness = Integer.parseInt(args[0], 10);
-			File iniFile = new File(args[1]);
-			Parameters.loadParameters(bitness, iniFile);
-			InternalVlcViewerDialog.initLibVlc();
-			System.out.println(MyUtil.getFormateDate() + "P-VCD started OK.");
+			Parameters.initParameters(new File(args[1]), bitness);
+			System.out.println(MyUtil.getFormateDate() + "P-VCD started.");
 		} catch (Throwable tr) {
 			SwingUtil.showError("Error at starting P-VCD", tr);
 			System.exit(1);

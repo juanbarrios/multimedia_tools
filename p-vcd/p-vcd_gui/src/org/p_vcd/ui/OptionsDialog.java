@@ -74,11 +74,9 @@ public class OptionsDialog extends JDialog {
 			panel_4.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 			JPanel panel = new JPanel();
-			panel.setBorder(new TitledBorder(null, "Descriptor",
-					TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panel.setBorder(new TitledBorder(null, "Descriptor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel_4.add(panel);
-			panel.setLayout(new MigLayout("", "[][][grow][grow]",
-					"[][][][][][][][]"));
+			panel.setLayout(new MigLayout("", "[][][grow][grow]", "[][][][][][][][]"));
 
 			JLabel lblGlobalDescriptors = new JLabel("Global Descriptors:");
 			panel.add(lblGlobalDescriptors, "cell 0 0 3 1");
@@ -86,8 +84,7 @@ public class OptionsDialog extends JDialog {
 			JCheckBox chckbxNewCheckBox = new JCheckBox("Spatio-Temporal");
 			panel.add(chckbxNewCheckBox, "cell 3 0");
 
-			JRadioButton rdbtnEdgeHistogramglobal = new JRadioButton(
-					"Edge Histogram");
+			JRadioButton rdbtnEdgeHistogramglobal = new JRadioButton("Edge Histogram");
 			panel.add(rdbtnEdgeHistogramglobal, "cell 2 1 2 1");
 
 			JLabel lblLocalDescriptors = new JLabel("Local Descriptors:");
@@ -103,41 +100,33 @@ public class OptionsDialog extends JDialog {
 			panel.add(lblNewLabel_1, "cell 1 6 2 1");
 
 			JComboBox<String> comboBox = new JComboBox<String>();
-			comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {
-					"1 second", "2 seconds" }));
+			comboBox.setModel(new DefaultComboBoxModel<String>(new String[] { "1 second", "2 seconds" }));
 			panel.add(comboBox, "cell 2 7,growx");
 
 			JPanel panel_1 = new JPanel();
-			panel_1.setBorder(new TitledBorder(UIManager
-					.getBorder("TitledBorder.border"), "Similarity Search",
+			panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Similarity Search",
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel_4.add(panel_1);
-			panel_1.setLayout(new MigLayout("gapy 10", "[150][grow]",
-					"[][][][][]"));
+			panel_1.setLayout(new MigLayout("gapy 10", "[150][grow]", "[][][][][]"));
 
-			JRadioButton rdbtnNewRadioButton = new JRadioButton(
-					"New radio button");
+			JRadioButton rdbtnNewRadioButton = new JRadioButton("New radio button");
 			panel_1.add(rdbtnNewRadioButton, "cell 0 0");
 
-			JRadioButton rdbtnNewRadioButton_1 = new JRadioButton(
-					"New radio button");
+			JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("New radio button");
 			panel_1.add(rdbtnNewRadioButton_1, "cell 0 1");
 
-			JRadioButton rdbtnNewRadioButton_2 = new JRadioButton(
-					"New radio button");
+			JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("New radio button");
 			panel_1.add(rdbtnNewRadioButton_2, "cell 0 2");
 
-			JRadioButton rdbtnNewRadioButton_3 = new JRadioButton(
-					"New radio button");
+			JRadioButton rdbtnNewRadioButton_3 = new JRadioButton("New radio button");
 			panel_1.add(rdbtnNewRadioButton_3, "cell 0 3");
 
-			JRadioButton rdbtnNewRadioButton_4 = new JRadioButton(
-					"New radio button");
+			JRadioButton rdbtnNewRadioButton_4 = new JRadioButton("New radio button");
 			panel_1.add(rdbtnNewRadioButton_4, "cell 0 4");
 
 			JPanel panel_2 = new JPanel();
-			panel_2.setBorder(new TitledBorder(null, "Copy Localization",
-					TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panel_2.setBorder(
+					new TitledBorder(null, "Copy Localization", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel_4.add(panel_2);
 			panel_2.setLayout(new MigLayout("", "[][]", "[]"));
 

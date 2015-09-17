@@ -20,18 +20,16 @@ import org.p_vcd.model.MyUtil;
 
 public class SwingUtil {
 	public static boolean showConfirm(String message) {
-		return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,
-				message, "Warning", JOptionPane.YES_NO_OPTION);
+		return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, message, "Warning",
+				JOptionPane.YES_NO_OPTION);
 	}
 
 	public static void showMessage(String message) {
-		JOptionPane.showMessageDialog(null, message, "Warning",
-				JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void showError(String title, Throwable tr) {
-		System.out.println(MyUtil.getFormateDate() + title + " "
-				+ tr.toString());
+		System.out.println(MyUtil.getFormateDate() + title + " " + tr.toString());
 		tr.printStackTrace();
 		String txt = tr.toString();
 		StringBuffer sb = new StringBuffer();
@@ -40,8 +38,7 @@ public class SwingUtil {
 			txt = txt.substring(100);
 		}
 		sb.append(txt);
-		JOptionPane.showMessageDialog(null, sb.toString(), title,
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, sb.toString(), title, JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static JLabel createLink(String name, final String url) {

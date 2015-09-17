@@ -7,7 +7,9 @@
 *.so.*
 *.exe
 *.out
+release_*
+generated_doc
+multimedia_tools_*
 Debug
 Release
-generated_doc
 .*

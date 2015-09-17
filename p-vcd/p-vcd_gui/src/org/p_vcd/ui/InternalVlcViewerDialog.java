@@ -22,18 +22,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.p_vcd.model.Parameters;
 import org.p_vcd.model.VideoCopy;
 import org.p_vcd.process.ProcessExternalVlcViewer;
 
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+
+import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
-
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
 
 public class InternalVlcViewerDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -47,9 +46,8 @@ public class InternalVlcViewerDialog extends JDialog {
 	public static synchronized void initLibVlc() {
 		if (isInit)
 			return;
-		File libVlc = Parameters.get().VLC_LIB;
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), libVlc
-				.getParentFile().getAbsolutePath());
+		File libVlc = new File(Parameters.get().getLibVlcPath());
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), libVlc.getParentFile().getAbsolutePath());
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		player1 = new EmbeddedMediaPlayerComponent();
 		player2 = new EmbeddedMediaPlayerComponent();
@@ -79,16 +77,12 @@ public class InternalVlcViewerDialog extends JDialog {
 	private static void startPlayback() {
 		try {
 			VideoCopy vc = lastVC;
-			playVideo(player1, vc.getVideoQ().getFilePath(), vc.getFromQ(),
-					vc.getToQ());
-			playVideo(player2, vc.getVideoR().getFilePath(), vc.getFromR(),
-					vc.getToR());
+			playVideo(player1, vc.getVideoQ().getFilePath(), vc.getFromQ(), vc.getToQ());
+			playVideo(player2, vc.getVideoR().getFilePath(), vc.getFromR(), vc.getToR());
 			dialog.name1.setText(vc.getVideoQ().getFilename());
 			dialog.name2.setText(vc.getVideoR().getFilename());
-			dialog.time1.setText("<html><i>" + vc.getFromQtxt() + " - "
-					+ vc.getToQtxt() + " ");
-			dialog.time2.setText("<html><i>" + vc.getFromRtxt() + " - "
-					+ vc.getToRtxt() + " ");
+			dialog.time1.setText("<html><i>" + vc.getFromQtxt() + " - " + vc.getToQtxt() + " ");
+			dialog.time2.setText("<html><i>" + vc.getFromRtxt() + " - " + vc.getToRtxt() + " ");
 		} catch (Throwable tr) {
 			tr.printStackTrace();
 		}
@@ -117,13 +111,12 @@ public class InternalVlcViewerDialog extends JDialog {
 		dialog = null;
 	}
 
-	private static void playVideo(EmbeddedMediaPlayerComponent player,
-			String filePath, double secondsStart, double secondsEnd) {
+	private static void playVideo(EmbeddedMediaPlayerComponent player, String filePath, double secondsStart,
+			double secondsEnd) {
 		double from = Math.round(secondsStart * 10) / 10.0;
 		double length = Math.round(secondsEnd * 10) / 10.0;
 		String file = new File(filePath).getAbsolutePath();
-		player.getMediaPlayer().playMedia(file, ":start-time=" + from,
-				":stop-time=" + length);
+		player.getMediaPlayer().playMedia(file, ":start-time=" + from, ":stop-time=" + length);
 	}
 
 	private JLabel name1 = new JLabel();
@@ -139,9 +132,8 @@ public class InternalVlcViewerDialog extends JDialog {
 		{
 			JPanel p = new JPanel();
 			getContentPane().add(p, BorderLayout.CENTER);
-			p.setLayout(new MigLayout("gapy 1, gapx 10",
-					"[400px,grow,center][400px,grow,center]",
-					"[grow][20px][20px]"));
+			p.setLayout(
+					new MigLayout("gapy 1, gapx 10", "[400px,grow,center][400px,grow,center]", "[grow][20px][20px]"));
 			if (player1 != null)
 				p.add(player1, "cell 0 0");
 			if (player2 != null)

@@ -15,7 +15,6 @@ import java.lang.ProcessBuilder.Redirect;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.p_vcd.model.MyUtil;
 import org.p_vcd.model.Parameters;
 
@@ -40,8 +39,7 @@ public abstract class ProcessBase {
 				}
 
 				@Override
-				public void callbackOnEnd(ProcessBase process,
-						boolean wasSuccessful) {
+				public void callbackOnEnd(ProcessBase process, boolean wasSuccessful) {
 				}
 			};
 		}
@@ -50,16 +48,12 @@ public abstract class ProcessBase {
 			public void run() {
 				try {
 					ProcessBase.this.runProcess(ProcessBase.this.status);
-					ProcessBase.this.status.callbackOnEnd(ProcessBase.this,
-							true);
+					ProcessBase.this.status.callbackOnEnd(ProcessBase.this, true);
 				} catch (Throwable tr) {
 					tr.printStackTrace();
-					ProcessBase.this.status.appendOutputLine("\n\n"
-							+ tr.toString());
-					ProcessBase.this.status.setPctProgress(
-							"ERROR: " + tr.toString(), 1);
-					ProcessBase.this.status.callbackOnEnd(ProcessBase.this,
-							false);
+					ProcessBase.this.status.appendOutputLine("\n\n" + tr.toString());
+					ProcessBase.this.status.setPctProgress("ERROR: " + tr.toString(), 1);
+					ProcessBase.this.status.callbackOnEnd(ProcessBase.this, false);
 				}
 			}
 		};
@@ -67,17 +61,15 @@ public abstract class ProcessBase {
 	}
 
 	public void sendKillProcess() {
-		if (!this.processingThread.isAlive())
+		if (this.processingThread != null || !this.processingThread.isAlive())
 			return;
 		Thread kthread = new Thread() {
 			@Override
 			public void run() {
 				while (ProcessBase.this.processRunning) {
 					System.out.println("\ntrying to kill process...\n");
-					ProcessBase.this.status
-							.appendOutputLine("\ntrying to kill process...\n");
-					System.out.println(ProcessBase.this.currentSystemProcess
-							.getClass());
+					ProcessBase.this.status.appendOutputLine("\ntrying to kill process...\n");
+					System.out.println(ProcessBase.this.currentSystemProcess.getClass());
 					ProcessBase.this.currentSystemProcess.destroy();
 					try {
 						Thread.sleep(500);
@@ -87,8 +79,7 @@ public abstract class ProcessBase {
 				}
 				while (ProcessBase.this.processingThread.isAlive()) {
 					System.out.println("\ninterrupting process...\n");
-					ProcessBase.this.status
-							.appendOutputLine("\ninterrupting process...\n");
+					ProcessBase.this.status.appendOutputLine("\ninterrupting process...\n");
 					ProcessBase.this.processingThread.interrupt();
 					try {
 						Thread.sleep(500);
@@ -102,8 +93,12 @@ public abstract class ProcessBase {
 		kthread.start();
 	}
 
-	public void waitProcess() throws Exception {
-		this.processingThread.join();
+	public void waitProcess() {
+		try {
+			this.processingThread.join();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public synchronized boolean hasEnded() {
@@ -111,6 +106,18 @@ public abstract class ProcessBase {
 	}
 
 	protected abstract void runProcess(StatusListener status) throws Exception;
+
+	protected void runVlc(ProcessArguments arguments) throws Exception {
+		runCommandInternal(Parameters.get().getVlcExePath(), arguments, Parameters.get().getUserDataPath(), null, null);
+	}
+
+	protected void runWget(ProcessArguments arguments, File workingDir, StringBuffer sbSaveStderr) throws Exception {
+		runCommandInternal(Parameters.get().getWgetExePath(), arguments, workingDir, null, sbSaveStderr);
+	}
+
+	protected void runYoutubeDl(ProcessArguments arguments, File workingDir) throws Exception {
+		runCommandInternal(Parameters.get().getYoutubedlExePath(), arguments, workingDir, null, null);
+	}
 
 	protected void runPvcdDb(ProcessArguments arguments) throws Exception {
 		runPvcd("pvcd_db", arguments);
@@ -128,21 +135,17 @@ public abstract class ProcessBase {
 		runPvcd("pvcd_detect", arguments);
 	}
 
-	private void runPvcd(String command, ProcessArguments arguments)
-			throws Exception {
-		if (Parameters.get().MAX_CORES > 1)
-			arguments.add("-num_cores", Parameters.get().MAX_CORES);
-		if (SystemUtils.IS_OS_WINDOWS)
-			command += ".exe";
-		File binfile = new File(Parameters.get().PVCD_DIR, command);
-		runCommandInternal(binfile, arguments, Parameters.get().USER_DATA_DIR,
-				null, null);
+	private void runPvcd(String command, ProcessArguments arguments) throws Exception {
+		if (Parameters.get().getPvcdMaxCores() > 1)
+			arguments.add("-num_cores", Parameters.get().getPvcdMaxCores());
+		String binfile = command + Parameters.get().getSystemExeExtension();
+		if (Parameters.get().getPvcdPath().length() > 0)
+			binfile = new File(Parameters.get().getPvcdPath(), binfile).toString();
+		runCommandInternal(binfile, arguments, Parameters.get().getUserDataPath(), null, null);
 	}
 
-	protected void runCommandInternal(File command,
-			ProcessArguments commandArgs, File workingDir,
-			StringBuffer sbSaveStdout, StringBuffer sbSaveStderr)
-			throws Exception {
+	private void runCommandInternal(String command, ProcessArguments commandArgs, File workingDir,
+			StringBuffer sbSaveStdout, StringBuffer sbSaveStderr) throws Exception {
 		commandArgs.insertFirst(command);
 		FileUtils.forceMkdir(workingDir);
 		StringBuffer sbLog = new StringBuffer();
@@ -157,11 +160,9 @@ public abstract class ProcessBase {
 		pb.redirectError(Redirect.PIPE);
 		long init = System.currentTimeMillis();
 		this.currentSystemProcess = pb.start();
-		PrintThreadWithStatus thStdout = new PrintThreadWithStatus(
-				this.currentSystemProcess.getInputStream(), command.getName(),
+		PrintThreadWithStatus thStdout = new PrintThreadWithStatus(this.currentSystemProcess.getInputStream(), command,
 				this.status, sbSaveStdout);
-		PrintThreadWithStatus thStderr = new PrintThreadWithStatus(
-				this.currentSystemProcess.getErrorStream(), command.getName(),
+		PrintThreadWithStatus thStderr = new PrintThreadWithStatus(this.currentSystemProcess.getErrorStream(), command,
 				this.status, sbSaveStderr);
 		this.currentSystemProcess.getOutputStream().close();
 		thStdout.start();
@@ -187,12 +188,10 @@ public abstract class ProcessBase {
 		}
 		long milis = System.currentTimeMillis() - init;
 		if (ret != 0) {
-			throw new Exception("command error code=" + ret + " (" + milis
-					+ " ms)");
+			throw new Exception("command error code=" + ret + " (" + milis + " ms)");
 		}
 		sbLog = new StringBuffer();
-		sbLog.append(MyUtil.getFormateDate()).append("command ")
-				.append(command.getName()).append(" ok (").append(milis)
+		sbLog.append(MyUtil.getFormateDate()).append("command ").append(command).append(" ok (").append(milis)
 				.append(" ms)");
 		System.out.println(sbLog.toString());
 		this.status.appendOutputLine(sbLog.toString());
@@ -206,8 +205,7 @@ class PrintThreadWithStatus extends Thread {
 	private StatusListener status;
 	private StringBuffer sbOutput;
 
-	public PrintThreadWithStatus(InputStream is, String commandName,
-			StatusListener status, StringBuffer sbOutput) {
+	public PrintThreadWithStatus(InputStream is, String commandName, StatusListener status, StringBuffer sbOutput) {
 		this.is = is;
 		String s = commandName;
 		if (s.endsWith(".exe") || s.endsWith(".EXE"))

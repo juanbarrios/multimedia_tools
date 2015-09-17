@@ -26,9 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.p_vcd.model.Parameters;
+
+import net.miginfocom.swing.MigLayout;
 
 public class AboutDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -77,8 +77,7 @@ public class AboutDialog extends JDialog {
 				JPanel panel_1 = new JPanel();
 				panel_1.setBackground(Color.WHITE);
 				panel.add(panel_1);
-				panel_1.setLayout(new MigLayout("", "[grow,trailing][grow]",
-						"[]20px[]20px[]20px[]20px[]"));
+				panel_1.setLayout(new MigLayout("", "[grow,trailing][grow]", "[]20px[]20px[]20px[]20px[]"));
 				{
 					JLabel lblPvcdVersion = new JLabel("P-VCD version:");
 					lblPvcdVersion.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -86,7 +85,7 @@ public class AboutDialog extends JDialog {
 				}
 				{
 					JLabel lblNewLabel_2 = new JLabel();
-					lblNewLabel_2.setText(Parameters.VERSION_NAME);
+					lblNewLabel_2.setText(Parameters.get().getSystemVersionName());
 					lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 					panel_1.add(lblNewLabel_2, "cell 1 0");
 				}
@@ -96,9 +95,7 @@ public class AboutDialog extends JDialog {
 					panel_1.add(lblHomepage, "cell 0 1");
 				}
 				{
-					JLabel lblhomepage = SwingUtil.createLink(
-							"http://p-vcd.org/",
-							"http://p-vcd.org/");
+					JLabel lblhomepage = SwingUtil.createLink("http://p-vcd.org/", "http://p-vcd.org/");
 					lblhomepage.setFont(new Font("Tahoma", Font.PLAIN, 14));
 					panel_1.add(lblhomepage, "cell 1 1");
 				}
@@ -111,25 +108,20 @@ public class AboutDialog extends JDialog {
 					JLabel lbltheNativeCore = new JLabel(
 							"<html><body style='width:100%'>\r\n<b>libpvcd</b>: The native core (written in C).<br>\r\n<b>CLI</b>: The command line interface (written in C).<br>\r\n<b>GUI</b>: This graphic user interface (written in Java).\r\n");
 					panel_1.add(lbltheNativeCore, "cell 1 2");
-					lbltheNativeCore
-							.setFont(new Font("Tahoma", Font.PLAIN, 14));
+					lbltheNativeCore.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				}
 				{
 					JLabel lblTheAuthorsAre = new JLabel("Authors:");
 					panel_1.add(lblTheAuthorsAre, "cell 0 3");
-					lblTheAuthorsAre
-							.setFont(new Font("Tahoma", Font.PLAIN, 14));
+					lblTheAuthorsAre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				}
 				{
-					JLabel lblJuan = SwingUtil.createLink(
-							"Juan Manuel Barrios",
-							"http://www.dcc.uchile.cl/~jbarrios/");
+					JLabel lblJuan = SwingUtil.createLink("Juan Manuel Barrios", "http://juan.cl/");
 					lblJuan.setText(lblJuan.getText() + " (libpvcd, CLI, GUI).");
 					panel_1.add(lblJuan, "flowy,cell 1 3");
 					lblJuan.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-					JLabel lblOrand = SwingUtil.createLink("Orand S.A. Chile",
-							"http://www.orand.cl/");
+					JLabel lblOrand = SwingUtil.createLink("Orand S.A. Chile", "http://www.orand.cl/");
 					lblOrand.setText(lblOrand.getText() + " (GUI).");
 					panel_1.add(lblOrand, "cell 1 3");
 					lblOrand.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -146,10 +138,8 @@ public class AboutDialog extends JDialog {
 					btnSeeLicense.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							LicenseDialog.openLicenseWindow(AboutDialog.this,
-									"P-VCD " + Parameters.VERSION_NAME
-											+ " (libpvcd, CLI, GUI)",
-									"http://p-vcd.org/",
-									"BSD 2-Clause License", "pvcd.license.txt");
+									"P-VCD " + Parameters.get().getSystemVersionName() + " (libpvcd, CLI, GUI)",
+									"http://p-vcd.org/", "BSD 2-Clause License", "pvcd.license.txt");
 						}
 					});
 					panel_1.add(btnSeeLicense, "cell 1 4,aligny baseline");
@@ -174,45 +164,31 @@ public class AboutDialog extends JDialog {
 					panel_2.setBackground(Color.WHITE);
 					scrollPane.setViewportView(panel_2);
 					int row = 0;
-					panel_2.setLayout(new MigLayout("",
-							"[80px,center][grow,center][grow][grow,center]",
-							"[][][][][][][]"));
-					createLicenseRow(panel_2, row++, "OpenCV", "2.4.9",
-							"http://www.opencv.org/", "BSD license",
+					panel_2.setLayout(
+							new MigLayout("", "[80px,center][grow,center][grow][grow,center]", "[][][][][][][]"));
+					createLicenseRow(panel_2, row++, "OpenCV", "2.4.9", "http://www.opencv.org/", "BSD license",
 							"opencv.license.txt");
-					createLicenseRow(panel_2, row++, "VLFeat", "0.9.20",
-							"http://www.vlfeat.org/", "BSD license",
+					createLicenseRow(panel_2, row++, "VLFeat", "0.9.20", "http://www.vlfeat.org/", "BSD license",
 							"vlfeat.license.txt");
-					createLicenseRow(panel_2, row++, "FLANN", "1.8.4",
-							"http://www.cs.ubc.ca/research/flann/",
+					createLicenseRow(panel_2, row++, "FLANN", "1.8.4", "http://www.cs.ubc.ca/research/flann/",
 							"BSD license", "flann.license.txt");
-					createLicenseRow(panel_2, row++, "FFmpeg", "2.6.1",
-							"http://www.ffmpeg.org/",
-							"GNU General Public License version 3",
-							"ffmpeg.license.txt");
-					createLicenseRow(panel_2, row++, "wget", "1.11.4",
-							"http://www.gnu.org/software/wget/",
-							"GNU General Public License version 3",
-							"wget.license.txt");
-					createLicenseRow(panel_2, row++, "youtube-dl",
-							"2015.04.09", "http://rg3.github.io/youtube-dl/",
+					createLicenseRow(panel_2, row++, "FFmpeg", "2.6.1", "http://www.ffmpeg.org/",
+							"GNU General Public License version 3", "ffmpeg.license.txt");
+					createLicenseRow(panel_2, row++, "wget", "1.11.4", "http://www.gnu.org/software/wget/",
+							"GNU General Public License version 3", "wget.license.txt");
+					createLicenseRow(panel_2, row++, "youtube-dl", "2015.04.09", "http://rg3.github.io/youtube-dl/",
 							"Public Domain", "youtube-dl.license.txt");
-					createLicenseRow(panel_2, row++, "VideoLan", "2.1.5",
-							"http://www.videolan.org/vlc/",
-							"GNU General Public License version 2",
-							"vlc.license.txt");
-					createLicenseRow(panel_2, row++, "vlcj", "3.6.0",
-							"https://code.google.com/p/vlcj/",
-							"GNU General Public License version 3",
-							"vlcj.license.txt");
+					createLicenseRow(panel_2, row++, "VideoLan", "2.1.5", "http://www.videolan.org/vlc/",
+							"GNU General Public License version 2", "vlc.license.txt");
+					createLicenseRow(panel_2, row++, "vlcj", "3.6.0", "https://code.google.com/p/vlcj/",
+							"GNU General Public License version 3", "vlcj.license.txt");
 				}
 			}
 		}
 	}
 
-	private static void createLicenseRow(final JPanel panel, int rowId,
-			final String libName, final String libVersion, final String libUrl,
-			final String licenseName, final String filename) {
+	private static void createLicenseRow(final JPanel panel, int rowId, final String libName, final String libVersion,
+			final String libUrl, final String licenseName, final String filename) {
 		JLabel ln = new JLabel("<html><b>" + libName + "</b>");
 		JLabel lv = new JLabel("<html><b>" + libVersion + "</b>");
 		JLabel lu = SwingUtil.createLink(libUrl, libUrl);
@@ -222,8 +198,7 @@ public class AboutDialog extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					LicenseDialog.openLicenseWindow(panel, libName + " "
-							+ libVersion, libUrl, licenseName, filename);
+					LicenseDialog.openLicenseWindow(panel, libName + " " + libVersion, libUrl, licenseName, filename);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

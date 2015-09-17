@@ -40,13 +40,13 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.p_vcd.model.MyUtil;
 import org.p_vcd.model.Parameters;
 import org.p_vcd.process.ProcessBase;
 import org.p_vcd.process.ProcessDatabase;
 import org.p_vcd.process.StatusListener;
+
+import net.miginfocom.swing.MigLayout;
 
 public class DatabaseDialog extends JDialog implements StatusListener {
 	private static final long serialVersionUID = 1L;
@@ -65,12 +65,11 @@ public class DatabaseDialog extends JDialog implements StatusListener {
 			return "required.";
 		}
 		for (char c : name.toCharArray()) {
-			if ((c < '0' || c > '9') && (c < 'a' || c > 'z')
-					&& (c < 'A' || c > 'Z') && c != '_' && c != '-' && c != '='
+			if ((c < '0' || c > '9') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && c != '_' && c != '-' && c != '='
 					&& c != '.' && c != ',')
 				return "invalid char '" + c + "'.";
 		}
-		File f = new File(Parameters.get().DATABASES_DIR, name);
+		File f = new File(Parameters.get().getDatabasesPath(), name);
 		if (f.exists())
 			return "name already used.";
 		return null;
@@ -206,9 +205,7 @@ public class DatabaseDialog extends JDialog implements StatusListener {
 			for (File ff : f.listFiles()) {
 				addFilesRecursive(sortedList, ff);
 			}
-		} else if (f.isFile()
-				&& MyUtil
-						.fileHasExtension(f, Parameters.get().VIDEO_EXTENSIONS)) {
+		} else if (f.isFile() && MyUtil.fileHasExtension(f, Parameters.get().getVideoExtensions())) {
 			sortedList.add(f.getAbsolutePath().toString());
 		}
 	}
@@ -217,15 +214,13 @@ public class DatabaseDialog extends JDialog implements StatusListener {
 		JFileChooser fc = new JFileChooser();
 		fc.setMultiSelectionEnabled(true);
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		fc.setFileFilter(new FileNameExtensionFilter("videos files", Parameters
-				.get().VIDEO_EXTENSIONS));
+		fc.setFileFilter(new FileNameExtensionFilter("videos files", Parameters.get().getVideoExtensions()));
 		File def = Parameters.get().getDefaultDir_DatabaseFiles();
 		if (def != null)
 			fc.setCurrentDirectory(def);
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			Parameters.get().setDefaultDir_DatabaseFiles(
-					fc.getCurrentDirectory());
+			Parameters.get().updateDefaultDir_DatabaseFiles(fc.getCurrentDirectory());
 			Set<String> sortedMap = new TreeSet<String>();
 			File[] ff = fc.getSelectedFiles();
 			for (File f : ff) {
@@ -247,8 +242,7 @@ public class DatabaseDialog extends JDialog implements StatusListener {
 		int[] idxs = fileList.getSelectedIndices();
 		if (idxs.length == 0)
 			return;
-		DefaultListModel<String> dlm = (DefaultListModel<String>) fileList
-				.getModel();
+		DefaultListModel<String> dlm = (DefaultListModel<String>) fileList.getModel();
 		for (int i = idxs.length - 1; i >= 0; i--) {
 			dlm.remove(idxs[i]);
 		}
@@ -274,8 +268,7 @@ public class DatabaseDialog extends JDialog implements StatusListener {
 			sbOutput = null;
 			textArea.setText("");
 			lblWait.setText("");
-			ProcessDatabase proc = new ProcessDatabase(
-					Parameters.get().DATABASES_DIR, dbName, list);
+			ProcessDatabase proc = new ProcessDatabase(Parameters.get().getDatabasesPath(), dbName, list);
 			proc.asyncRun(this);
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -305,9 +298,7 @@ public class DatabaseDialog extends JDialog implements StatusListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				DatabaseDialog.this.dispose();
-				DatabaseDialog.this.vcdDialog
-						.updateDatabases(((ProcessDatabase) process)
-								.getDbName());
+				DatabaseDialog.this.vcdDialog.updateDatabases(((ProcessDatabase) process).getDbName());
 			}
 		});
 	}

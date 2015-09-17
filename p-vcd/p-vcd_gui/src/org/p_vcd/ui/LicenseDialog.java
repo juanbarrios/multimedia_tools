@@ -14,7 +14,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.InputStream;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -26,24 +26,21 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
-import net.miginfocom.swing.MigLayout;
+import org.apache.commons.io.IOUtils;
 
-import org.apache.commons.io.FileUtils;
-import org.p_vcd.model.Parameters;
+import net.miginfocom.swing.MigLayout;
 
 public class LicenseDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 
-	public LicenseDialog(String libName, String libHomepage,
-			String licenseName, String licenseFilename) {
+	public LicenseDialog(String libName, String libHomepage, String licenseName, String licenseFilename) {
 		setSize(680, 480);
 		setTitle(libName);
 		getContentPane().setLayout(new BorderLayout());
 		{
 			JPanel panel = new JPanel();
 			getContentPane().add(panel, BorderLayout.NORTH);
-			panel.setLayout(new MigLayout("", "[grow,trailing][grow]",
-					"[20px][][]"));
+			panel.setLayout(new MigLayout("", "[grow,trailing][grow]", "[20px][][]"));
 			{
 				JLabel lblSoft = new JLabel(libName);
 				lblSoft.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -77,8 +74,7 @@ public class LicenseDialog extends JDialog {
 			panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setPreferredSize(new Dimension(600, 300));
-			scrollPane
-					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			panel.add(scrollPane);
 			{
 				JTextArea txtLicense = new JTextArea();
@@ -87,12 +83,11 @@ public class LicenseDialog extends JDialog {
 				txtLicense.setWrapStyleWord(true);
 				txtLicense.setLineWrap(true);
 				try {
-					File lic = new File(Parameters.get().LICENSES_DIR,
-							licenseFilename);
-					if (lic.exists() && lic.isFile() && lic.canRead()) {
-						String text = FileUtils.readFileToString(lic, "UTF-8");
-						txtLicense.setText(text);
-					}
+					InputStream is = Thread.currentThread().getContextClassLoader()
+							.getResourceAsStream("org/p_vcd/licenses/" + licenseFilename);
+					String text = IOUtils.toString(is, "UTF-8");
+					IOUtils.closeQuietly(is);
+					txtLicense.setText(text);
 					txtLicense.setCaretPosition(0);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -116,10 +111,9 @@ public class LicenseDialog extends JDialog {
 		}
 	}
 
-	public static void openLicenseWindow(Component windowPanel, String libName,
-			String libHomepage, String licenseName, String licenseFilename) {
-		LicenseDialog v = new LicenseDialog(libName, libHomepage, licenseName,
-				licenseFilename);
+	public static void openLicenseWindow(Component windowPanel, String libName, String libHomepage, String licenseName,
+			String licenseFilename) {
+		LicenseDialog v = new LicenseDialog(libName, libHomepage, licenseName, licenseFilename);
 		v.setModalityType(ModalityType.APPLICATION_MODAL);
 		v.setLocationRelativeTo(windowPanel);
 		v.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

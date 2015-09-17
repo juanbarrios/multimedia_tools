@@ -9,7 +9,6 @@ package org.p_vcd.process;
 
 import java.io.File;
 
-import org.p_vcd.model.Parameters;
 import org.p_vcd.model.VideoCopy;
 
 public class ProcessExternalVlcViewer extends ProcessBase {
@@ -37,10 +36,10 @@ public class ProcessExternalVlcViewer extends ProcessBase {
 		int w2 = vc.getVideoR().getWidth();
 		int h1 = vc.getVideoQ().getHeight();
 		int h2 = vc.getVideoR().getHeight();
-		this.viewerQ = new ProcessSingleViewer(vc.getVideoQ().getFilePath(),
-				vc.getFromQ(), vc.getToQ(), 20, 20, w1 / 2, h1 / 2);
-		this.viewerR = new ProcessSingleViewer(vc.getVideoR().getFilePath(),
-				vc.getFromR(), vc.getToR(), w1 / 2, h1 / 2, w2 / 2, h2 / 2);
+		this.viewerQ = new ProcessSingleViewer(vc.getVideoQ().getFilePath(), vc.getFromQ(), vc.getToQ(), 20, 20, w1 / 2,
+				h1 / 2);
+		this.viewerR = new ProcessSingleViewer(vc.getVideoR().getFilePath(), vc.getFromR(), vc.getToR(), w1 / 2, h1 / 2,
+				w2 / 2, h2 / 2);
 	}
 
 	@Override
@@ -70,9 +69,8 @@ class ProcessSingleViewer extends ProcessBase {
 	private double secondsEnd;
 	private int windowX, windowY, windowWidth, windowHeight;
 
-	public ProcessSingleViewer(String filePath, double secondsStart,
-			double secondsEnd, int windowX, int windowY, int windowWidth,
-			int windowHeight) {
+	public ProcessSingleViewer(String filePath, double secondsStart, double secondsEnd, int windowX, int windowY,
+			int windowWidth, int windowHeight) {
 		this.filePath = filePath;
 		this.secondsStart = secondsStart;
 		this.secondsEnd = secondsEnd;
@@ -97,8 +95,7 @@ class ProcessSingleViewer extends ProcessBase {
 		commandLine.add("--video-y=" + windowY);
 		commandLine.add("--width=" + windowWidth);
 		commandLine.add("--height=" + windowHeight);
-		runCommandInternal(Parameters.get().VLC_BIN, commandLine,
-				Parameters.get().USER_DATA_DIR, null, null);
+		runVlc(commandLine);
 	}
 
 }

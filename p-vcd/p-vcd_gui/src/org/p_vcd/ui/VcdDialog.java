@@ -59,8 +59,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.p_vcd.model.MyUtil;
@@ -73,6 +71,8 @@ import org.p_vcd.process.ProcessExternalVlcViewer;
 import org.p_vcd.process.ProcessOptions;
 import org.p_vcd.process.ProcessVCD;
 import org.p_vcd.process.StatusListener;
+
+import net.miginfocom.swing.MigLayout;
 
 public class VcdDialog extends JDialog implements StatusListener {
 	private static final long serialVersionUID = 1L;
@@ -87,8 +87,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 	private JPanel panel_refDatabasesList = new JPanel();
 
 	// step 2 query
-	private JRadioButton radio_queryFile = new JRadioButton(
-			"Image or Video File");
+	private JRadioButton radio_queryFile = new JRadioButton("Image or Video File");
 	private JLabel lbl_queryFile = new JLabel();
 	private JRadioButton radio_queryUrl = new JRadioButton("Image or Video URL");
 	private JTextField txt_queryUrl = new JTextField();
@@ -100,10 +99,8 @@ public class VcdDialog extends JDialog implements StatusListener {
 	private VideoDatabase queryDb;
 
 	// step 3 options
-	private JRadioButton radio_searchByGlobal = new JRadioButton(
-			"Search based on global descriptor (recommended)");
-	private JRadioButton radio_searchByLocal = new JRadioButton(
-			"Search based on local descriptors");
+	private JRadioButton radio_searchByGlobal = new JRadioButton("Search based on global descriptor (recommended)");
+	private JRadioButton radio_searchByLocal = new JRadioButton("Search based on local descriptors");
 
 	// step 4 run
 	private JTextArea textConsole = new JTextArea();
@@ -132,19 +129,16 @@ public class VcdDialog extends JDialog implements StatusListener {
 			JPanel panel_Step1 = new JPanel();
 			contentPanel.add(panel_Step1, "card_step1");
 			panel_Step1.setLayout(new BorderLayout(0, 0));
-			JLabel lblTitle = new JLabel(
-					"STEP 1 - Video Database (the \"known\")");
+			JLabel lblTitle = new JLabel("STEP 1 - Video Database (the \"known\")");
 			panel_Step1.add(lblTitle, BorderLayout.NORTH);
 			lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 			lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 			JPanel panel_1 = new JPanel();
 			panel_Step1.add(panel_1, BorderLayout.CENTER);
-			panel_1.setLayout(new MigLayout("",
-					"[250px,grow][20px][250px,grow]", "[][][230px,grow][][][]"));
+			panel_1.setLayout(new MigLayout("", "[250px,grow][20px][250px,grow]", "[][][230px,grow][][][]"));
 
-			JLabel lblNewLabel = new JLabel(
-					"Please select the video databases to search in:");
+			JLabel lblNewLabel = new JLabel("Please select the video databases to search in:");
 			panel_1.add(lblNewLabel, "cell 0 0");
 
 			panel_1.add(lbl_refDbTitle, "cell 2 1");
@@ -154,8 +148,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 			panel_refDatabasesList.setBackground(Color.WHITE);
 
 			scrollPane_1.setViewportView(panel_refDatabasesList);
-			panel_refDatabasesList.setLayout(new MigLayout("gapy 10",
-					"[200px]", "[][]"));
+			panel_refDatabasesList.setLayout(new MigLayout("gapy 10", "[200px]", "[][]"));
 
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBorder(null);
@@ -183,12 +176,11 @@ public class VcdDialog extends JDialog implements StatusListener {
 			lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 			JPanel panel = new JPanel();
-			panel.setBorder(new TitledBorder(UIManager
-					.getBorder("TitledBorder.border"), "Query",
-					TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Query", TitledBorder.LEADING,
+					TitledBorder.TOP, null, null));
 			panel_Step2.add(panel, BorderLayout.CENTER);
-			panel.setLayout(new MigLayout("", "[160px][grow]",
-					"[25px][grow,top][25px][grow,top][25px][grow,top][grow]"));
+			panel.setLayout(
+					new MigLayout("", "[160px][grow]", "[25px][grow,top][25px][grow,top][25px][grow,top][grow]"));
 
 			ButtonGroup queryButtonGroup = new ButtonGroup();
 
@@ -212,8 +204,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 			});
 			panel.add(btnSelectFile, "cell 1 0");
 
-			JLabel lblIumageOrVideo = new JLabel(
-					"Select an image or video in the local machine.");
+			JLabel lblIumageOrVideo = new JLabel("Select an image or video in the local machine.");
 			panel.add(lblIumageOrVideo, "cell 1 1");
 
 			queryButtonGroup.add(radio_queryUrl);
@@ -253,14 +244,13 @@ public class VcdDialog extends JDialog implements StatusListener {
 			comboBox_queryDb.setMaximumRowCount(12);
 			comboBox_queryDb.setPreferredSize(new Dimension(100, 20));
 			comboBox_queryDb.setMinimumSize(new Dimension(100, 20));
-			comboBox_queryDb
-					.addPropertyChangeListener(new PropertyChangeListener() {
-						public void propertyChange(PropertyChangeEvent evt) {
-							if (comboBox_queryDb.getSelectedIndex() > 0)
-								radio_queryDb.setSelected(true);
-							updateQueryDbDetail();
-						}
-					});
+			comboBox_queryDb.addPropertyChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (comboBox_queryDb.getSelectedIndex() > 0)
+						radio_queryDb.setSelected(true);
+					updateQueryDbDetail();
+				}
+			});
 			comboBox_queryDb.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
@@ -274,8 +264,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 
 			panel.add(lbl_queryDb, "cell 1 4");
 
-			JLabel lblPleaseNopteThe = new JLabel(
-					"<html>A search is run for each video in the database.</html>");
+			JLabel lblPleaseNopteThe = new JLabel("<html>A search is run for each video in the database.</html>");
 			panel.add(lblPleaseNopteThe, "cell 1 5");
 
 		}
@@ -294,22 +283,18 @@ public class VcdDialog extends JDialog implements StatusListener {
 			panel_Step3.add(panel2, BorderLayout.CENTER);
 			JPanel panel = new JPanel();
 			panel2.add(panel);
-			panel.setBorder(new TitledBorder(UIManager
-					.getBorder("TitledBorder.border"), "Basic Options",
+			panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Basic Options",
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			panel.setLayout(new MigLayout("gapy 5px", "[30px][101px]",
-					"[][][][][][][20px]"));
+			panel.setLayout(new MigLayout("gapy 5px", "[30px][101px]", "[][][][][][][20px]"));
 
 			ButtonGroup buttonGroup = new ButtonGroup();
 
 			buttonGroup.add(radio_searchByGlobal);
 			radio_searchByGlobal.setFont(new Font("Tahoma", Font.PLAIN, 13));
 			radio_searchByGlobal.setSelected(true);
-			panel.add(radio_searchByGlobal,
-					"cell 0 0 2 1,alignx left,aligny top");
+			panel.add(radio_searchByGlobal, "cell 0 0 2 1,alignx left,aligny top");
 
-			JLabel lblNewLabel_2 = new JLabel(
-					"Detects most of the copies that are visually alike to the original.");
+			JLabel lblNewLabel_2 = new JLabel("Detects most of the copies that are visually alike to the original.");
 			panel.add(lblNewLabel_2, "cell 1 1");
 
 			JButton btnOptions = new JButton("Advanced Options...");
@@ -318,8 +303,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 
 			buttonGroup.add(radio_searchByLocal);
 			radio_searchByLocal.setFont(new Font("Tahoma", Font.PLAIN, 13));
-			panel.add(radio_searchByLocal,
-					"cell 0 4 2 1,alignx left,aligny top");
+			panel.add(radio_searchByLocal, "cell 0 4 2 1,alignx left,aligny top");
 
 			JLabel lblNewLabel_3 = new JLabel(
 					"Requires more resources (disk space, search time, memory) but can detect more copies.");
@@ -348,8 +332,8 @@ public class VcdDialog extends JDialog implements StatusListener {
 			textConsole.setBackground(Color.BLACK);
 			textConsole.setEditable(false);
 			textConsole.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-			textConsole
-					.setText("Press 'Next' button to start the search...\nNote: Depending on the selected options, the search may take up to several hours.");
+			textConsole.setText(
+					"Press 'Next' button to start the search...\nNote: Depending on the selected options, the search may take up to several hours.");
 			scrollPane.setViewportView(textConsole);
 
 			JPanel panel = new JPanel();
@@ -382,8 +366,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 
 			scrollPane.setViewportView(panelResults);
 			panelResults.setLayout(new MigLayout("gapy 10, gapx 20",
-					"[120px,center][150px,center,grow][150px,center,grow]",
-					"[25px][]"));
+					"[120px,center][150px,center,grow][150px,center,grow]", "[25px][]"));
 
 		}
 		{
@@ -448,10 +431,8 @@ public class VcdDialog extends JDialog implements StatusListener {
 				entriesToAdd.add(db);
 		}
 		for (VideoDatabase db : entriesToAdd) {
-			JCheckBox chkbox = new JCheckBox(db.getName() + "  ("
-					+ db.getFileList().size() + " files, "
-					+ MyUtil.getSecondsToHHMMSS(db.getTotalSeconds())
-					+ " length)");
+			JCheckBox chkbox = new JCheckBox(db.getName() + "  (" + db.getFileList().size() + " files, "
+					+ MyUtil.getSecondsToHHMMSS(db.getTotalSeconds()) + " length)");
 			chkbox.setBackground(Color.WHITE);
 			chkbox.setFont(new Font("Tahoma", Font.PLAIN, 13));
 			chkbox.addChangeListener(new ChangeListener() {
@@ -472,8 +453,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 		panel_refDatabasesList.validate();
 		// default value
 		if (defaultValue != null) {
-			for (Map.Entry<VideoDatabase, JCheckBox> entry : map_refDbCheck
-					.entrySet()) {
+			for (Map.Entry<VideoDatabase, JCheckBox> entry : map_refDbCheck.entrySet()) {
 				if (!defaultValue.equals(entry.getKey().getName()))
 					continue;
 				JCheckBox chkbox = entry.getValue();
@@ -487,8 +467,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 		for (VideoDatabase db : refDbs) {
 			listQ.add(db.getName());
 		}
-		comboBox_queryDb.setModel(new DefaultComboBoxModel<String>(listQ
-				.toArray(new String[0])));
+		comboBox_queryDb.setModel(new DefaultComboBoxModel<String>(listQ.toArray(new String[0])));
 		updateReferenceDbDetail();
 		updateQueryDbDetail();
 	}
@@ -512,8 +491,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 				lbl_refDbMetadata.setText("");
 				return;
 			}
-			lbl_refDbTitle.setText("Files in " + selectedRefDbs.size()
-					+ " selected databases:");
+			lbl_refDbTitle.setText("Files in " + selectedRefDbs.size() + " selected databases:");
 			int contFiles = 0;
 			long contSize = 0;
 			double contTime = 0;
@@ -529,8 +507,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 			String txtSize = FileUtils.byteCountToDisplaySize(contSize);
 			String txtTime = MyUtil.getSecondsToHHMMSS(contTime);
 			lbl_refDbFiles.setText(sb.toString());
-			lbl_refDbMetadata.setText(contFiles + " files, " + txtSize
-					+ " total size, " + txtTime + " total length.");
+			lbl_refDbMetadata.setText(contFiles + " files, " + txtSize + " total size, " + txtTime + " total length.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -545,8 +522,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 				String dbName = (String) comboBox_queryDb.getSelectedItem();
 				if (queryDb == null || !queryDb.getName().equals(dbName)) {
 					queryDb = null;
-					for (VideoDatabase db : VideoDatabase
-							.getReferenceDatabases()) {
+					for (VideoDatabase db : VideoDatabase.getReferenceDatabases()) {
 						if (db.getName().equals(dbName)) {
 							queryDb = db;
 							break;
@@ -558,8 +534,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 				lbl_queryDb.setText("");
 			} else {
 				lbl_queryDb.setText(queryDb.getFileList().size() + " files, "
-						+ MyUtil.getSecondsToHHMMSS(queryDb.getTotalSeconds())
-						+ " total time.");
+						+ MyUtil.getSecondsToHHMMSS(queryDb.getTotalSeconds()) + " total time.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -577,15 +552,14 @@ public class VcdDialog extends JDialog implements StatusListener {
 		JFileChooser fc = new JFileChooser();
 		fc.setMultiSelectionEnabled(false);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.setFileFilter(new FileNameExtensionFilter("images and videos",
-				Parameters.get().IMAGE_AND_VIDEO_EXTENSIONS));
+		fc.setFileFilter(
+				new FileNameExtensionFilter("images and videos", Parameters.get().getImageAndVideoExtensions()));
 		File def = Parameters.get().getDefaultDir_QuerySelection();
 		if (def != null)
 			fc.setCurrentDirectory(def);
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			Parameters.get().setDefaultDir_QuerySelection(
-					fc.getCurrentDirectory());
+			Parameters.get().updateDefaultDir_QuerySelection(fc.getCurrentDirectory());
 			queryFile = fc.getSelectedFile();
 			lbl_queryFile.setText(queryFile.getAbsolutePath());
 			radio_queryFile.setSelected(true);
@@ -633,13 +607,11 @@ public class VcdDialog extends JDialog implements StatusListener {
 					return false;
 				}
 			} else {
-				SwingUtil
-						.showMessage("Must select the query type: File, URL or Database.");
+				SwingUtil.showMessage("Must select the query type: File, URL or Database.");
 				return false;
 			}
 		} else if (currentStep == 3) {
-			if (!radio_searchByGlobal.isSelected()
-					&& !radio_searchByLocal.isSelected()) {
+			if (!radio_searchByGlobal.isSelected() && !radio_searchByLocal.isSelected()) {
 				SwingUtil.showMessage("Must select the search type.");
 				return false;
 			}
@@ -665,20 +637,17 @@ public class VcdDialog extends JDialog implements StatusListener {
 					options = ProcessOptions.getDefaultLocalOptions();
 				}
 				List<VideoDatabase> selectedRefDbs = getSelectedRefDbs();
-				this.currentSearch = new ProcessVCD(selectedRefDbs,
-						radio_queryFile.isSelected() ? queryFile : null,
-						radio_queryUrl.isSelected() ? queryUrl : null,
-						radio_queryDb.isSelected() ? queryDb : null, options);
+				this.currentSearch = new ProcessVCD(selectedRefDbs, radio_queryFile.isSelected() ? queryFile : null,
+						radio_queryUrl.isSelected() ? queryUrl : null, radio_queryDb.isSelected() ? queryDb : null,
+						options);
 				this.currentSearch.asyncRun(this);
 			}
 		}
 	}
 
 	private void cancelButton() {
-		if (currentStep == 4
-				&& (currentSearch != null && !currentSearch.hasEnded())) {
-			if (SwingUtil
-					.showConfirm("A search is running. Do you want to cancel the process?"))
+		if (currentStep == 4 && (currentSearch != null && !currentSearch.hasEnded())) {
+			if (SwingUtil.showConfirm("A search is running. Do you want to cancel the process?"))
 				currentSearch.sendKillProcess();
 		} else {
 			this.dispose();
@@ -723,8 +692,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 		if (this.resultDetections == null || this.resultDetections.size() == 0) {
 			JLabel ll1 = new JLabel("Search did not produce any result!");
 			ll1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			JLabel ll2 = new JLabel(
-					"Press the 'Previous' button and try with other parameters.");
+			JLabel ll2 = new JLabel("Press the 'Previous' button and try with other parameters.");
 			ll2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			panelResults.add(ll1, "cell 0 0 3 1");
 			panelResults.add(ll2, "cell 0 1 3 1");
@@ -738,23 +706,18 @@ public class VcdDialog extends JDialog implements StatusListener {
 			for (int i = 0; i < this.resultDetections.size(); ++i) {
 				VideoCopy vc = this.resultDetections.get(i);
 				final int rowPos = i + 1;
-				JButton butt = new JButton(
-						"<html><body style='width:100%;text-align:center'>Watch Video Copy<br>("
-								+ vc.getLengthTxt() + " length)");
+				JButton butt = new JButton("<html><body style='width:100%;text-align:center'>Watch Video Copy<br>("
+						+ vc.getLengthTxt() + " length)");
 				// butt.setHorizontalAlignment(SwingConstants.CENTER);
 				butt.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						launchCopy("" + rowPos);
 					}
 				});
-				JLabel timQ = new JLabel(
-						"<html><body style='width:100%;text-align:center'>"
-								+ vc.getVideoQ().getFilename() + "<br><i>"
-								+ vc.getFromQtxt() + " - " + vc.getToQtxt());
-				JLabel timR = new JLabel(
-						"<html><body style='width:100%;text-align:center'>"
-								+ vc.getVideoR().getFilename() + "<br><i>"
-								+ vc.getFromRtxt() + " - " + vc.getToRtxt());
+				JLabel timQ = new JLabel("<html><body style='width:100%;text-align:center'>"
+						+ vc.getVideoQ().getFilename() + "<br><i>" + vc.getFromQtxt() + " - " + vc.getToQtxt());
+				JLabel timR = new JLabel("<html><body style='width:100%;text-align:center'>"
+						+ vc.getVideoR().getFilename() + "<br><i>" + vc.getFromRtxt() + " - " + vc.getToRtxt());
 				panelResults.add(butt, "cell 0 " + rowPos);
 				panelResults.add(timQ, "cell 1 " + rowPos);
 				panelResults.add(timR, "cell 2 " + rowPos);
@@ -768,8 +731,7 @@ public class VcdDialog extends JDialog implements StatusListener {
 
 	public void launchCopy(String id) {
 		int num = Integer.parseInt(id) - 1;
-		if (this.resultDetections == null
-				|| this.resultDetections.size() <= num)
+		if (this.resultDetections == null || this.resultDetections.size() <= num)
 			return;
 		VideoCopy vc = this.resultDetections.get(num);
 		InternalVlcViewerDialog.playVideoCopy(vc);
