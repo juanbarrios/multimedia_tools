@@ -1,8 +1,11 @@
 @echo off
-set "INI_FILE=%cd%\p-vcd.ini"
-set "JAR_FILE=%cd%\lib\p-vcd_gui.jar"
 
-FOR %%F IN ("%INI_FILE%" "%JAR_FILE%") DO (
+rem Retrieving installation path
+set "INSTALL_PATH=%~dp0"
+rem The gui jar path
+set "JAR_FILE=%INSTALL_PATH%\lib\p-vcd_gui.jar"
+
+FOR %%F IN ("%JAR_FILE%") DO (
 	if not exist %%F goto errReq
 )
 
@@ -14,10 +17,6 @@ goto testBitness
 :setJavaHome
 set "JAVA_BIN=%JAVA_HOME%\bin\java.exe"
 set "JAVAW_BIN=%JAVA_HOME%\bin\javaw.exe"
-
-FOR %%F IN ("%JAVA_BIN%" "%JAVAW_BIN%") DO (
-	if not exist %%F goto errJava
-)
 
 :testBitness
 "%JAVA_BIN%" -d64 -version > NUL 2>&1
@@ -37,21 +36,18 @@ set BITS=64
 goto run
 
 :run
-start "P-VCD" "%JAVAW_BIN%" -jar "%JAR_FILE%" "%BITS%" "%INI_FILE%"
+start "P-VCD" "%JAVAW_BIN%" -jar "%JAR_FILE%" "%BITS%" "%INSTALL_PATH%"
 goto endOk
 
 :errJava
 echo Cannot find a valid JRE 32 bit nor 64 bits on this machine.
-echo Please go to http://www.java.com/ and install the latest version.
+echo Please go to http://www.java.com/ and install the latest JRE.
 goto endError
 
 :errReq
 echo Cannot find all the required resources to run P-VCD.
+echo Searched path: %JAR_FILE%
 echo Please re-install the program.
-goto endError
-
-:errStart
-echo An error occurred at starting P-VCD.
 goto endError
 
 :endError
