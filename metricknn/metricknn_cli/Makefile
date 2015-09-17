@@ -41,25 +41,25 @@ CPP_O_FILES := $(addprefix $(BUILD_DIR)/cpp/,$(CPP_FILES:.cpp=.o))
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(C_O_FILES) $(CPP_O_FILES)
-	mkdir -p $(BUILD_DIR)
-	g++ -o $(EXECUTABLE) $(C_O_FILES) $(CPP_O_FILES) $(LDFLAGS)
+	mkdir -p "$(BUILD_DIR)"
+	g++ -o "$(EXECUTABLE)" $(C_O_FILES) $(CPP_O_FILES) $(LDFLAGS)
 
 $(BUILD_DIR)/c/%.o: %.c $(H_FILES)
 	mkdir -p $(@D)
-	gcc -std=gnu99 -c $(CFLAGS) -DVERSION_NAME=$(VERSION_NAME) -o $@ $<
+	gcc -std=gnu99 -c $(CFLAGS) "-DVERSION_NAME=$(VERSION_NAME)" -o $@ $<
 	
 $(BUILD_DIR)/cpp/%.o: %.cpp $(HPP_FILES) $(H_FILES)
 	mkdir -p $(@D)
-	g++ -std=gnu++11 -c $(CFLAGS) -DVERSION_NAME=$(VERSION_NAME) -o $@ $<
+	g++ -std=gnu++11 -c $(CFLAGS) "-DVERSION_NAME=$(VERSION_NAME)" -o $@ $<
 
 install:
-	install -d $(INSTALL_DIR)/bin
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/metricknn$(SUFFIX_EXE)
+	install -d "$(INSTALL_DIR)/bin"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/metricknn$(SUFFIX_EXE)"
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf "$(BUILD_DIR)"
 
 doc:
-	rm -rf $(DOC_DIR)
+	rm -rf "$(DOC_DIR)"
 	sleep 1
 	doxygen Doxyfile

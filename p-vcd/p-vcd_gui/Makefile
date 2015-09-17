@@ -24,14 +24,10 @@ $(EXECUTABLE): $(SOURCEFILES)
 	"$(ANT)" -f "$(BUILD_FILE)" "-DVERSION_NAME=$(VERSION_NAME)" "-DBUILD_DIR=$(BUILD_DIR)" "-DJAR_NAME=$(JAR_NAME)"
 
 install:
-	install -d $(INSTALL_DIR)/gui/lib
-	install lib/*.jar $(INSTALL_DIR)/gui/lib
-	install $(EXECUTABLE) $(INSTALL_DIR)/gui/lib
-	install scripts/p-vcd.bat $(INSTALL_DIR)/gui
-	install scripts/p-vcd.ini $(INSTALL_DIR)/gui
-	install scripts/download_3rd_party.sh $(INSTALL_DIR)/gui
-	install -d $(INSTALL_DIR)/gui/licenses
-	install licenses/*.txt $(INSTALL_DIR)/gui/licenses
+	install -d "$(INSTALL_DIR)/gui/lib"
+	install lib/*.jar "$(INSTALL_DIR)/gui/lib"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/gui/lib"
+	install scripts/p-vcd.bat "$(INSTALL_DIR)/gui"
 
 clean:
 	rm -rf "$(BUILD_DIR)"

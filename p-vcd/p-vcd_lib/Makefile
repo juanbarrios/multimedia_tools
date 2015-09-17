@@ -50,23 +50,23 @@ PKG_REQUIRES_PRIV := myutils myutilsimage metricknn opencv
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(C_O_FILES) $(CPP_O_FILES)
-	mkdir -p $(BUILD_DIR)
-	g++ -shared -o $(EXECUTABLE) $(C_O_FILES) $(CPP_O_FILES) $(LDFLAGS)
+	mkdir -p "$(BUILD_DIR)"
+	g++ -shared -o "$(EXECUTABLE)" $(C_O_FILES) $(CPP_O_FILES) $(LDFLAGS)
 
 $(BUILD_DIR)/c/%.o: %.c $(H_FILES)
 	mkdir -p $(@D)
-	gcc -std=gnu99 -c $(CFLAGS) -DVERSION_NAME=$(VERSION_NAME) -o $@ $<
+	gcc -std=gnu99 -c $(CFLAGS) "-DVERSION_NAME=$(VERSION_NAME)" -o $@ $<
 	
 $(BUILD_DIR)/cpp/%.o: %.cpp $(HPP_FILES) $(H_FILES)
 	mkdir -p $(@D)
-	g++ -std=gnu++11 -c $(CFLAGS) -DVERSION_NAME=$(VERSION_NAME) -o $@ $<
+	g++ -std=gnu++11 -c $(CFLAGS) "-DVERSION_NAME=$(VERSION_NAME)" -o $@ $<
 
 install:
-	install -d $(INSTALL_DIR)/lib
-	install $(EXECUTABLE) $(INSTALL_DIR)/lib
-	install -d $(INSTALL_DIR)/include
-	cd $(SOURCE_DIR) && find * -type f \( -name '*.h' -o -name '*.hpp' \) -exec install -D {} $(INSTALL_DIR)/include/{} \;
-	install -d $(PKG_DIR)
+	install -d "$(INSTALL_DIR)/lib"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/lib"
+	install -d "$(INSTALL_DIR)/include"
+	cd "$(SOURCE_DIR)" && find * -type f \( -name '*.h' -o -name '*.hpp' \) -exec install -D {} "$(INSTALL_DIR)"/include/{} \;
+	install -d "$(PKG_DIR)"
 	@echo 'prefix=$(INSTALL_DIR)'                          >  '$(PKG_FILE)'
 	@echo 'exec_prefix=$${prefix}'                         >> '$(PKG_FILE)'
 	@echo 'libdir=$${exec_prefix}/lib'                     >> '$(PKG_FILE)'
@@ -82,4 +82,4 @@ install:
 	@echo 'Cflags: -I$${includedir}'                       >> '$(PKG_FILE)'
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf "$(BUILD_DIR)"

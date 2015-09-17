@@ -41,8 +41,8 @@ CPP_O_FILES := $(addprefix $(BUILD_DIR)/cpp/,$(CPP_FILES:.cpp=.o))
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(C_O_FILES) $(CPP_O_FILES)
-	mkdir -p $(BUILD_DIR)
-	g++ -o $(EXECUTABLE) $(C_O_FILES) $(CPP_O_FILES) $(LDFLAGS)
+	mkdir -p "$(BUILD_DIR)"
+	g++ -o "$(EXECUTABLE)" $(C_O_FILES) $(CPP_O_FILES) $(LDFLAGS)
 
 $(BUILD_DIR)/c/%.o: %.c $(H_FILES)
 	mkdir -p $(@D)
@@ -53,16 +53,16 @@ $(BUILD_DIR)/cpp/%.o: %.cpp $(HPP_FILES) $(H_FILES)
 	g++ -std=gnu++11 -c $(CFLAGS) -o $@ $<
 
 install:
-	install -d $(INSTALL_DIR)/bin
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_db$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_detect$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_localMatches$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_partitionImage$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_search$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_mergeLocalToGlobal$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_mergeNN$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_evaluate$(SUFFIX_EXE)
-	install $(EXECUTABLE) $(INSTALL_DIR)/bin/pvcd_view$(SUFFIX_EXE)
+	install -d "$(INSTALL_DIR)/bin"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_db$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_detect$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_localMatches$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_partitionImage$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_search$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_mergeLocalToGlobal$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_mergeNN$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_evaluate$(SUFFIX_EXE)"
+	install "$(EXECUTABLE)" "$(INSTALL_DIR)/bin/pvcd_view$(SUFFIX_EXE)"
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf "$(BUILD_DIR)"
