@@ -28,6 +28,7 @@ install:
 	install lib/*.jar "$(INSTALL_DIR)/gui/lib"
 	install "$(EXECUTABLE)" "$(INSTALL_DIR)/gui/lib"
 	install scripts/p-vcd.bat "$(INSTALL_DIR)/gui"
+	install scripts/p-vcd.sh "$(INSTALL_DIR)/gui"
 
 clean:
 	rm -rf "$(BUILD_DIR)"
