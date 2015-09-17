@@ -129,6 +129,10 @@ static void priv_load_cmd_parameters(CmdParams *cmd_params) {
 			removeLastParam(cmd_params);
 			pvcd_register_video_fileExtensions(nextParam(cmd_params));
 			removeLastParam(cmd_params);
+		} else if (isNextParam(cmd_params, "-version")) {
+			removeLastParam(cmd_params);
+			pvcd_print_legal();
+			pvcd_system_exit_ok(cmd_params);
 		} else {
 			nextParam(cmd_params);
 		}
@@ -174,8 +178,6 @@ CmdParams *pvcd_system_start(int argc, char **argv) {
 	pvcd_register_default_values();
 	priv_load_cmd_parameters(cmd_params);
 	pvcd_restore_locale();
-	if (!hasNextParam(cmd_params))
-		pvcd_print_legal();
 	func_external_afterInit();
 	return cmd_params;
 }
