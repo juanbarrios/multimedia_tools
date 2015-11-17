@@ -125,12 +125,9 @@ function testSourcePath {
 		SOURCE_PATH=`pwd`
 		cd "$CURR"
 	fi
-	#test the existence of projects folders
-	if [[ ! -d "$SOURCE_PATH/myutils/myutils_lib"
-		  || ! -d "$SOURCE_PATH/myutils/myutilsimage_lib"
-		  || ! -d "$SOURCE_PATH/metricknn/metricknn_lib"
-		  || ! -d "$SOURCE_PATH/p-vcd/p-vcd_lib" ]]; then
-		echo "Path $SOURCE_PATH does not contain source for projects myutils, metricknn and p-vcd."
+	#test the existence of at least one source folder
+	if [[ ! -d "$SOURCE_PATH/myutils/myutils_lib/src" ]]; then
+		echo "Path $SOURCE_PATH does not contain source code for project myutils."
 		exit 1
 	fi
 	echo "SOURCE_PATH: $SOURCE_PATH"
