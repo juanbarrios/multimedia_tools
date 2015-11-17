@@ -62,4 +62,5 @@ clean:
 doc:
 	rm -rf "$(DOC_DIR)"
 	sleep 1
-	doxygen Doxyfile
+	mkdir -p "$(DOC_DIR)"
+	sed -e "s#^OUTPUT_DIRECTORY.*#OUTPUT_DIRECTORY = $(DOC_DIR)#" Doxyfile | doxygen -
