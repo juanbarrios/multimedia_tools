@@ -80,11 +80,11 @@ void my_imagePair_updateImages(MyImagePair *image_pair, IplImage *image1,
 		my_image_fill_squares(newImg);
 	cvSetImageROI(newImg, image_pair->zone1);
 	cvCopy(image1, newImg, NULL);
-	cvRectangleR(newImg, image_pair->zone1, cvScalarAll(0), 1, 8, 0);
 	cvSetImageROI(newImg, image_pair->zone2);
 	cvCopy(image2, newImg, NULL);
-	cvRectangleR(newImg, image_pair->zone2, cvScalarAll(0), 1, 8, 0);
 	cvResetImageROI(newImg);
+	cvRectangleR(newImg, image_pair->zone1, cvScalarAll(0), 1, 8, 0);
+	cvRectangleR(newImg, image_pair->zone2, cvScalarAll(0), 1, 8, 0);
 }
 
 IplImage *my_imagePair_getIplImage(MyImagePair *image_pair) {
